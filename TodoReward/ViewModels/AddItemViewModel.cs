@@ -10,6 +10,7 @@ namespace TodoReward.ViewModels
         private readonly ITodoItemService _itemService;
 
         [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(AddItemCommand))]
         private string _inputTitle = string.Empty;
 
         [ObservableProperty]
@@ -21,7 +22,7 @@ namespace TodoReward.ViewModels
             InputScore = 1;
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanSaveItem))]
         private async Task AddItem()
         {
             var scoreInt = Convert.ToInt32(InputScore);
@@ -34,6 +35,11 @@ namespace TodoReward.ViewModels
             await _itemService.AddAsync(item);
 
             await Shell.Current.GoToAsync("..");
+        }
+
+        private bool CanSaveItem()
+        {
+            return string.IsNullOrEmpty(InputTitle) == false;
         }
     }
 }
