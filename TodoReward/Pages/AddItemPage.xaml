@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:TodoReward.ViewModels"
+             xmlns:model="clr-namespace:TodoReward.Models"
+             x:Class="TodoReward.Pages.AddItemPage"
+             x:DataType="viewmodel:AddItemViewModel"
+             Title="Add">
+    <StackLayout Padding="10" Spacing="40">
+            <Label Text="Add new Todo item" 
+                   FontSize="Large"/>
+        <StackLayout Padding="10" Spacing="40" VerticalOptions="StartAndExpand">
+            <Entry Placeholder="Title" Text="{Binding InputTitle}"/>
+            <StackLayout>
+                <Label Text="{Binding InputScore, StringFormat='Score: {0:F0}'}"/>
+                <Slider Value="{Binding InputScore}" 
+                        Maximum="3" 
+                        Minimum="1" />
+            </StackLayout>
+        </StackLayout>
+        <StackLayout Padding="10">
+            <Button Text="Save" Command="{Binding AddItemCommand}" VerticalOptions="EndAndExpand"/>
+        </StackLayout>
+    </StackLayout>
+</ContentPage>
