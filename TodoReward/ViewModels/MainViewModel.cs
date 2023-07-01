@@ -24,9 +24,14 @@ namespace TodoReward.ViewModels
 
         public async Task Init()
         {
+            await LoadItemsAsync();
+        }
+
+        private async Task LoadItemsAsync()
+        {
             Items.Clear();
 
-            var items = await _itemService.GetAllAsync();
+            var items = await _itemService.GetAllAsync(item => !item.IsDone);
             foreach (var item in items)
             {
                 Items.Add(item);
@@ -37,6 +42,32 @@ namespace TodoReward.ViewModels
         private async Task AddItem()
         {
             await Shell.Current.GoToAsync(nameof(AddItemPage));
+        }
+
+        [RelayCommand]
+        private async Task CompleteItems()
+        {
+            var selectedItemsCopy = new List<TodoItem>(SelectedItems.Cast<TodoItem>());
+
+            foreach (var selectedItem in selectedItemsCopy)
+            {
+                selectedItem.IsDone = true;
+                await _itemService.UpdateAsync(selectedItem.Id, selectedItem);
+
+                Items.Remove(selectedItem);
+            }
+
+            //var itemsCopy = new List<TodoItem>(Items);
+
+            //foreach (var selectedItem in SelectedItems.Cast<TodoItem>())
+            //{
+            //    selectedItem.IsDone = true;
+            //    await _itemService.UpdateAsync(selectedItem.Id, selectedItem);
+
+            //    itemsCopy.Remove(selectedItem);
+            //}
+
+            //Items = new ObservableCollection<TodoItem>(itemsCopy);
         }
     }
 }

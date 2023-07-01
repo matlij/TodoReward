@@ -44,7 +44,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Button Text="Complete" HeightRequest="60"/>
+            <Button Text="Complete" HeightRequest="60" Command="{Binding CompleteItemsCommand}"/>
             <Button Text="Add" Grid.Column="1" HeightRequest="60" Command="{Binding AddItemCommand}"/>
         </Grid>
     </StackLayout>
