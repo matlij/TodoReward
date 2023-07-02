@@ -1,27 +1,23 @@
-﻿using TodoReward.Models;
+﻿using TodoReward.BusinessLayer.Interfaces;
+using TodoReward.BusinessLayer.Models;
 
-namespace TodoReward.Services
+namespace TodoReward.BusinessLayer.Repositories
 {
-    public interface ITodoItemService
-    {
-        Task<bool> AddAsync(TodoItem item);
-        Task<IEnumerable<TodoItem>> GetAllAsync(Func<TodoItem, bool> predicate);
-        Task<IEnumerable<TodoItem>> GetAllAsync();
-        Task<bool> UpdateAsync(Guid id, TodoItem item);
-    }
 
-    public class TodoItemService : ITodoItemService
+    public class TodoItemRepository
+
+        : ITodoItemRepository
     {
         private readonly List<TodoItem> _items;
 
-        public TodoItemService()
+        public TodoItemRepository()
         {
             _items = new List<TodoItem>()
             {
-                new TodoItem { Title = "Foo" },
-                new TodoItem { Title = "Bar" },
+                new TodoItem { Title = "Foo", Points = 3 },
+                new TodoItem { Title = "Bar", Points = 2 },
+                new TodoItem { Title = "FooBar", Points = 1 },
             };
-
         }
 
         public Task<bool> AddAsync(TodoItem item)
@@ -40,7 +36,17 @@ namespace TodoReward.Services
         {
             var items = _items.Where(predicate);
 
-            return Task.FromResult(items as IEnumerable<TodoItem>);
+            return Task.FromResult(items);
+        }
+
+        public async Task<bool> UpdateBatchAsync(IEnumerable<TodoItem> items)
+        {
+            foreach (var item in items)
+            {
+                await UpdateAsync(item.Id, item);
+            }
+
+            return true;
         }
 
         public Task<bool> UpdateAsync(Guid id, TodoItem item)

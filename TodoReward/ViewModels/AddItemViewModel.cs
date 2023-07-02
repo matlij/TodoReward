@@ -1,13 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using TodoReward.Models;
-using TodoReward.Services;
+using TodoReward.BusinessLayer.Interfaces;
+using TodoReward.BusinessLayer.Models;
 
 namespace TodoReward.ViewModels
 {
     public partial class AddItemViewModel : ObservableObject
     {
-        private readonly ITodoItemService _itemService;
+        private readonly ITodoItemRepository _itemService;
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(AddItemCommand))]
@@ -16,7 +16,7 @@ namespace TodoReward.ViewModels
         [ObservableProperty]
         private double _inputScore;
 
-        public AddItemViewModel(ITodoItemService itemService)
+        public AddItemViewModel(ITodoItemRepository itemService)
         {
             _itemService = itemService;
             InputScore = 1;
@@ -29,7 +29,7 @@ namespace TodoReward.ViewModels
 
             var item = new TodoItem
             { 
-                Score = scoreInt, 
+                Points = scoreInt, 
                 Title = InputTitle 
             };
             await _itemService.AddAsync(item);

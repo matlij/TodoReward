@@ -1,14 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
-using TodoReward.Models;
+using TodoReward.BusinessLayer.Interfaces;
+using TodoReward.BusinessLayer.Models;
 using TodoReward.Pages;
-using TodoReward.Services;
 
 namespace TodoReward.ViewModels
 {
     public partial class MainViewModel : ObservableObject
     {
+        private readonly ITodoItemRepository _itemRepository;
         private readonly ITodoItemService _itemService;
 
         [ObservableProperty]
@@ -17,25 +18,10 @@ namespace TodoReward.ViewModels
         [ObservableProperty]
         private List<object> _selectedItems = new();
 
-        public MainViewModel(ITodoItemService itemService)
+        public MainViewModel(ITodoItemRepository itemRepository, ITodoItemService todoItemService)
         {
-            _itemService = itemService;
-        }
-
-        public async Task Init()
-        {
-            await LoadItemsAsync();
-        }
-
-        private async Task LoadItemsAsync()
-        {
-            Items.Clear();
-
-            var items = await _itemService.GetAllAsync(item => !item.IsDone);
-            foreach (var item in items)
-            {
-                Items.Add(item);
-            }
+            _itemRepository = itemRepository;
+            _itemService = todoItemService;
         }
 
         [RelayCommand]
@@ -51,23 +37,29 @@ namespace TodoReward.ViewModels
 
             foreach (var selectedItem in selectedItemsCopy)
             {
-                selectedItem.IsDone = true;
-                await _itemService.UpdateAsync(selectedItem.Id, selectedItem);
-
+                var reward = await _itemService.CompleteItemAsync(selectedItem);
+                if (reward != null)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Alert", "You have been alerted", "OK");
+                }
                 Items.Remove(selectedItem);
             }
+        }
 
-            //var itemsCopy = new List<TodoItem>(Items);
+        public async Task Init()
+        {
+            await LoadItemsAsync();
+        }
 
-            //foreach (var selectedItem in SelectedItems.Cast<TodoItem>())
-            //{
-            //    selectedItem.IsDone = true;
-            //    await _itemService.UpdateAsync(selectedItem.Id, selectedItem);
+        private async Task LoadItemsAsync()
+        {
+            Items.Clear();
 
-            //    itemsCopy.Remove(selectedItem);
-            //}
-
-            //Items = new ObservableCollection<TodoItem>(itemsCopy);
+            var items = await _itemRepository.GetAllAsync(item => !item.IsCompleted);
+            foreach (var item in items)
+            {
+                Items.Add(item);
+            }
         }
     }
 }
