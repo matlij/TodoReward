@@ -4,6 +4,6 @@ namespace TodoReward.BusinessLayer.Interfaces
 {
     public interface ITodoItemService
     {
-        Task<Reward> CompleteItemAsync(TodoItem item);
+        Task<Reward?> CompleteItemAsync(TodoItem item);
     }
 }

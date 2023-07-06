@@ -4,31 +4,32 @@ using TodoReward.BusinessLayer.Models;
 namespace TodoReward.BusinessLayer
 {
 
+
     public class TodoItemService : ITodoItemService
     {
-        private readonly ITodoItemRepository _todoRepository;
-        private readonly IRewardRepository _rewardRepository;
-        private readonly IUserRepository _userRepository;
+        private readonly IRewardService _rewardService;
+        private readonly IGenericRepository<TodoItem> _todoRepository;
+        private readonly IGenericRepository<User> _userRepository;
 
         private const int RewardLimit = 4;
 
-        public TodoItemService(ITodoItemRepository repository, IRewardRepository rewardRepository, IUserRepository userRepository)
+        public TodoItemService(IRewardService rewardService, IGenericRepository<TodoItem> todoRepository, IGenericRepository<User> userRepository)
         {
-            _todoRepository = repository;
-            _rewardRepository = rewardRepository;
+            _rewardService = rewardService;
+            _todoRepository = todoRepository;
             _userRepository = userRepository;
         }
 
-        public async Task<Reward> CompleteItemAsync(TodoItem item)
+        public async Task<Reward?> CompleteItemAsync(TodoItem item)
         {
             await CompleteTodoItem(item);
 
             return await GetReward(item);
         }
 
-        private async Task<Reward> GetReward(TodoItem item)
+        private async Task<Reward?> GetReward(TodoItem item)
         {
-            var user = await _userRepository.GetAsync();
+            var user = (await _userRepository.GetAllAsync()).First();
 
             user.TotalPoints += item.Points;
             if (user.TotalPointsNotRewarded < RewardLimit)
@@ -38,7 +39,11 @@ namespace TodoReward.BusinessLayer
 
             user.TotalPointsRewarded += RewardLimit;
 
-            return await _rewardRepository.GetRandomAsync();
+            var reward = await _rewardService.GenerateRandomAsync();
+
+            user.Rewards.Add(reward);
+
+            return reward;
         }
 
         private async Task CompleteTodoItem(TodoItem item)

@@ -2,8 +2,8 @@
 
 namespace TodoReward.BusinessLayer.Interfaces
 {
-    public interface IRewardRepository
+    public interface IRewardService
     {
-        Task<Reward> GetRandomAsync();
+        Task<Reward> GenerateRandomAsync();
     }
 }

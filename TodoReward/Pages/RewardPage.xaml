@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:TodoReward.ViewModels"
+             xmlns:model="clr-namespace:TodoReward.BusinessLayer.Models;assembly=TodoReward.BusinessLayer"
+             x:DataType="viewmodel:RewardViewModel"
+             x:Class="TodoReward.Pages.RewardPage"
+             Title="Rewards">
+    <VerticalStackLayout Padding="10">
+        <ListView ItemsSource="{Binding Rewards}" >
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell x:DataType="model:Reward"
+                              Text="{Binding Title}"
+                              Detail="Foobar" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </VerticalStackLayout>
+</ContentPage>

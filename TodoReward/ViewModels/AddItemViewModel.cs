@@ -7,7 +7,7 @@ namespace TodoReward.ViewModels
 {
     public partial class AddItemViewModel : ObservableObject
     {
-        private readonly ITodoItemRepository _itemService;
+        private readonly IGenericRepository<TodoItem> _repository;
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(AddItemCommand))]
@@ -16,9 +16,9 @@ namespace TodoReward.ViewModels
         [ObservableProperty]
         private double _inputScore;
 
-        public AddItemViewModel(ITodoItemRepository itemService)
+        public AddItemViewModel(IGenericRepository<TodoItem> repository)
         {
-            _itemService = itemService;
+            _repository = repository;
             InputScore = 1;
         }
 
@@ -32,7 +32,7 @@ namespace TodoReward.ViewModels
                 Points = scoreInt, 
                 Title = InputTitle 
             };
-            await _itemService.AddAsync(item);
+            await _repository.AddAsync(item);
 
             await Shell.Current.GoToAsync("..");
         }

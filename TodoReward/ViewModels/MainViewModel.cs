@@ -9,7 +9,7 @@ namespace TodoReward.ViewModels
 {
     public partial class MainViewModel : ObservableObject
     {
-        private readonly ITodoItemRepository _itemRepository;
+        private readonly IGenericRepository<TodoItem> _itemRepository;
         private readonly ITodoItemService _itemService;
 
         [ObservableProperty]
@@ -18,7 +18,7 @@ namespace TodoReward.ViewModels
         [ObservableProperty]
         private List<object> _selectedItems = new();
 
-        public MainViewModel(ITodoItemRepository itemRepository, ITodoItemService todoItemService)
+        public MainViewModel(ITodoItemService todoItemService, IGenericRepository<TodoItem> itemRepository)
         {
             _itemRepository = itemRepository;
             _itemService = todoItemService;
@@ -40,7 +40,8 @@ namespace TodoReward.ViewModels
                 var reward = await _itemService.CompleteItemAsync(selectedItem);
                 if (reward != null)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Alert", "You have been alerted", "OK");
+                    await Application.Current.MainPage.DisplayAlert("Reward!", "You have received a reward", "OK");
+
                 }
                 Items.Remove(selectedItem);
             }
@@ -55,7 +56,7 @@ namespace TodoReward.ViewModels
         {
             Items.Clear();
 
-            var items = await _itemRepository.GetAllAsync(item => !item.IsCompleted);
+            var items = await _itemRepository.GetBySpecificationAsync(item => !item.IsCompleted);
             foreach (var item in items)
             {
                 Items.Add(item);

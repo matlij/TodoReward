@@ -6,9 +6,15 @@
     xmlns:local="clr-namespace:TodoReward.Pages"
     Shell.FlyoutBehavior="Disabled">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <TabBar>
+        <Tab Icon="listcheck.png"
+            Title="Items">
+            <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
+        </Tab>
+        <Tab Icon="trophy.png"
+             Title="Rewards">
+            <ShellContent ContentTemplate="{DataTemplate local:RewardPage}" />
+        </Tab>
+    </TabBar>
 
 </Shell>

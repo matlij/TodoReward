@@ -4,11 +4,10 @@
              xmlns:viewmodel="clr-namespace:TodoReward.ViewModels"
              xmlns:model="clr-namespace:TodoReward.BusinessLayer.Models;assembly=TodoReward.BusinessLayer"
              x:Class="TodoReward.Pages.MainPage"
-             x:DataType="viewmodel:MainViewModel">
+             x:DataType="viewmodel:MainViewModel"
+             Title="Todo list">
 
     <StackLayout Padding="10,10,10,40">
-        <!--<RefreshView IsRefreshing="{Binding IsRefreshing}"
-                     Command="{Binding LoadItemsCommand}">-->
         <CollectionView x:Name="ItemsCollectionView"
                         ItemsSource="{Binding Items}"
                         VerticalOptions="FillAndExpand"
@@ -34,7 +33,6 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-        <!--</RefreshView>-->
 
         <Grid ColumnSpacing="20">
             <Grid.RowDefinitions>

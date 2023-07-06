@@ -6,21 +6,21 @@ namespace TodoReward.BusinessLayer.Tests
 {
     public class TodoItemServiceTests
     {
-        private readonly Mock<IUserRepository> _userRepositoryMock;
-        private readonly Mock<IRewardRepository> _rewardRepositoryMock;
-        private readonly Mock<ITodoItemRepository> _todoRepositoryMock;
+        private readonly Mock<IGenericRepository<User>> _userRepositoryMock;
+        private readonly Mock<IRewardService> _rewardRepositoryMock;
+        private readonly Mock<IGenericRepository<TodoItem>> _todoRepositoryMock;
         private readonly TodoItemService _sut;
 
         public TodoItemServiceTests()
         {
-            _userRepositoryMock = new Mock<IUserRepository>();
-            _todoRepositoryMock = new Mock<ITodoItemRepository>();
-            _rewardRepositoryMock = new Mock<IRewardRepository>();
+            _userRepositoryMock = new Mock<IGenericRepository<User>>();
+            _todoRepositoryMock = new Mock<IGenericRepository<TodoItem>>();
+            _rewardRepositoryMock = new Mock<IRewardService>();
             _rewardRepositoryMock
-                .Setup(repo => repo.GetRandomAsync())
+                .Setup(repo => repo.GenerateRandomAsync())
                 .ReturnsAsync(new Reward());
 
-            _sut = new TodoItemService(_todoRepositoryMock.Object, _rewardRepositoryMock.Object, _userRepositoryMock.Object);
+            _sut = new TodoItemService(_rewardRepositoryMock.Object, _todoRepositoryMock.Object, _userRepositoryMock.Object);
         }
 
         [Fact]
@@ -37,16 +37,17 @@ namespace TodoReward.BusinessLayer.Tests
                 TotalPoints = 6,
                 TotalPointsRewarded = 4
             };
-            _userRepositoryMock.Setup(repo => repo.GetAsync())
-                .ReturnsAsync(user);
+            _userRepositoryMock
+                .Setup(repo => repo.GetAllAsync())
+                .ReturnsAsync(new[] { user } );
 
             // Act
             var reward = await _sut.CompleteItemAsync(item);
 
             // Assert
-            _userRepositoryMock.Verify(repo => repo.GetAsync(), Times.Once);
+            _userRepositoryMock.Verify(repo => repo.GetAllAsync(), Times.Once);
             _todoRepositoryMock.Verify(repo => repo.UpdateAsync(item.Id, item), Times.Once);
-            _rewardRepositoryMock.Verify(repo => repo.GetRandomAsync(), Times.Once);
+            _rewardRepositoryMock.Verify(repo => repo.GenerateRandomAsync(), Times.Once);
             Assert.NotNull(reward);
         }
 
@@ -65,16 +66,16 @@ namespace TodoReward.BusinessLayer.Tests
                 TotalPointsRewarded = 0
             };
             _userRepositoryMock
-                .Setup(repo => repo.GetAsync())
-                .ReturnsAsync(user);
+                .Setup(repo => repo.GetAllAsync())
+                .ReturnsAsync(new[] { user });
 
             // Act
             var reward = await _sut.CompleteItemAsync(item);
 
             // Assert
-            _userRepositoryMock.Verify(repo => repo.GetAsync(), Times.Once);
+            _userRepositoryMock.Verify(repo => repo.GetAllAsync(), Times.Once);
             _todoRepositoryMock.Verify(repo => repo.UpdateAsync(item.Id, item), Times.Once);
-            _rewardRepositoryMock.Verify(repo => repo.GetRandomAsync(), Times.Never);
+            _rewardRepositoryMock.Verify(repo => repo.GenerateRandomAsync(), Times.Never);
             Assert.Null(reward);
         }
     }
