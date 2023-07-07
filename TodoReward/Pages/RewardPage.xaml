@@ -6,15 +6,21 @@
              x:DataType="viewmodel:RewardViewModel"
              x:Class="TodoReward.Pages.RewardPage"
              Title="Rewards">
-    <VerticalStackLayout Padding="10">
-        <ListView ItemsSource="{Binding Rewards}" >
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextCell x:DataType="model:Reward"
-                              Text="{Binding Title}"
-                              Detail="Foobar" />
+    <StackLayout Padding="10,10,10,30">
+        <CollectionView x:Name="ItemsCollectionView"
+                        ItemsSource="{Binding Rewards}"
+                        VerticalOptions="FillAndExpand"
+                        SelectionMode="Single"
+                        SelectedItem="{Binding SelectedReward}"
+                        SelectionChangedCommand="{Binding UseRewardCommand}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="{x:Type model:Reward}">
+                    <StackLayout Padding="10">
+                        <Label Text="{Binding Title}" FontSize="16" FontAttributes="Bold"/>
+                        <Label Text="{Binding Description}" />
+                    </StackLayout>
                 </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-    </VerticalStackLayout>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </StackLayout>
 </ContentPage>
