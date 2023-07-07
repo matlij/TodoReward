@@ -21,7 +21,7 @@ namespace TodoReward.BusinessLayer.Repositories
         public GenericRepository()
         {
             var faker = new MyDefaultFaker<T>();
-            _items = faker.GenerateBetween(3, 5);
+            _items = faker.GenerateBetween(19, 20);
         }
 
         public Task<IEnumerable<T>> GetAllAsync()

@@ -22,5 +22,8 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+
+        <Button Text="Undo" IsVisible="{Binding CanUndo}" Command="{Binding UndoUsedRewardCommand}"/>
+
     </StackLayout>
 </ContentPage>
