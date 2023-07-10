@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.8" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="7.0.8" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="7.0.0" />
+		<PackageReference Include="AutoBogus" Version="2.13.1" />
+		<PackageReference Include="Bogus" Version="34.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\TodoReward.Core\TodoReward.Core.csproj" />
+	</ItemGroup>
+
+</Project>

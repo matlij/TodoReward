@@ -1,4 +1,4 @@
-﻿namespace TodoReward.BusinessLayer.Models
+﻿namespace TodoReward.Core.Models
 {
     public abstract class BaseEntity
     {

@@ -1,8 +1,8 @@
 using Moq;
-using TodoReward.BusinessLayer.Interfaces;
-using TodoReward.BusinessLayer.Models;
+using TodoReward.Core.Interfaces;
+using TodoReward.Core.Models;
 
-namespace TodoReward.BusinessLayer.Tests
+namespace TodoReward.Core.Tests
 {
     public class TodoItemServiceTests
     {

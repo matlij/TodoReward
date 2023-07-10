@@ -3,8 +3,8 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Timers;
-using TodoReward.BusinessLayer.Interfaces;
-using TodoReward.BusinessLayer.Models;
+using TodoReward.Core.Interfaces;
+using TodoReward.Core.Models;
 using Timer = System.Timers.Timer;
 
 namespace TodoReward.ViewModels
@@ -12,13 +12,13 @@ namespace TodoReward.ViewModels
     public partial class RewardViewModel : ObservableObject
     {
         private readonly IGenericRepository<User> _repository;
-        private readonly Stack<Reward> _usedRewards = new();
+        private readonly Stack<UserReward> _usedRewards = new();
 
         [ObservableProperty]
-        private ObservableCollection<Reward> _rewards = new();
+        private ObservableCollection<UserReward> _rewards = new();
 
         [ObservableProperty]
-        private Reward _selectedReward = new();
+        private UserReward _selectedReward = new();
 
         [ObservableProperty]
         private bool _canUndo;
@@ -28,7 +28,7 @@ namespace TodoReward.ViewModels
         public RewardViewModel(IGenericRepository<User> repository)
         {
             _repository = repository;
-            _disableUndoButtonTimer = new Timer(TimeSpan.FromSeconds(3));
+            _disableUndoButtonTimer = new Timer(TimeSpan.FromSeconds(10));
             _disableUndoButtonTimer.Elapsed += OnDisableUndoEvent;
             _disableUndoButtonTimer.AutoReset = false;
             _disableUndoButtonTimer.Enabled = false;
@@ -72,7 +72,7 @@ namespace TodoReward.ViewModels
             CanUndo = false;
         }
 
-        private bool RemoveFromList(IList<Reward> rewards, Guid idToRemove)
+        private bool RemoveFromList(IList<UserReward> rewards, Guid idToRemove)
         {
             var rewardToRemove = rewards.SingleOrDefault(r => r.Id == idToRemove);
             if (rewardToRemove is null)
@@ -89,7 +89,7 @@ namespace TodoReward.ViewModels
             CanUndo = false;
         }
 
-        private async Task<IEnumerable<Reward>> GetUserRewards()
+        private async Task<IEnumerable<UserReward>> GetUserRewards()
         {
             var user = await GetUser();
 
@@ -102,7 +102,7 @@ namespace TodoReward.ViewModels
             return users.First();
         }
 
-        private void PopulateRewardsCollection(IEnumerable<Reward> rewards)
+        private void PopulateRewardsCollection(IEnumerable<UserReward> rewards)
         {
             Rewards.Clear();
 

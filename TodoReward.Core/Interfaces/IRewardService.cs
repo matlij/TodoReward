@@ -1,6 +1,6 @@
-﻿using TodoReward.BusinessLayer.Models;
+﻿using TodoReward.Core.Models;
 
-namespace TodoReward.BusinessLayer.Interfaces
+namespace TodoReward.Core.Interfaces
 {
     public interface IRewardService
     {

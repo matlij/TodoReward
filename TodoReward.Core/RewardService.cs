@@ -1,7 +1,7 @@
-﻿using TodoReward.BusinessLayer.Interfaces;
-using TodoReward.BusinessLayer.Models;
+﻿using TodoReward.Core.Interfaces;
+using TodoReward.Core.Models;
 
-namespace TodoReward.BusinessLayer
+namespace TodoReward.Core
 {
     public class RewardService : IRewardService
     {

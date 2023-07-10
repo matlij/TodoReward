@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
-using TodoReward.BusinessLayer.Interfaces;
-using TodoReward.BusinessLayer.Models;
+using TodoReward.Core.Interfaces;
+using TodoReward.Core.Models;
 using TodoReward.Pages;
 
 namespace TodoReward.ViewModels

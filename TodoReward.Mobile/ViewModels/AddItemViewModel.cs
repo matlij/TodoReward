@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using TodoReward.BusinessLayer.Interfaces;
-using TodoReward.BusinessLayer.Models;
+using TodoReward.Core.Interfaces;
+using TodoReward.Core.Models;
 
 namespace TodoReward.ViewModels
 {

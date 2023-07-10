@@ -1,9 +1,10 @@
 ﻿using AutoBogus;
 using Bogus;
-using TodoReward.BusinessLayer.Interfaces;
-using TodoReward.BusinessLayer.Models;
+using System.Linq.Expressions;
+using TodoReward.Core.Interfaces;
+using TodoReward.Core.Models;
 
-namespace TodoReward.BusinessLayer.Repositories
+namespace TodoReward.Infrastructure.Repositories
 {
     public class MyDefaultFaker<T> : AutoFaker<T> where T : class
     {
@@ -14,11 +15,11 @@ namespace TodoReward.BusinessLayer.Repositories
         }
     }
 
-    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
+    public class InMemoryRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         private readonly IList<T> _items;
 
-        public GenericRepository()
+        public InMemoryRepository()
         {
             var faker = new MyDefaultFaker<T>();
             _items = faker.GenerateBetween(19, 20);
@@ -34,9 +35,9 @@ namespace TodoReward.BusinessLayer.Repositories
             return Task.FromResult(_items.SingleOrDefault(x => x.Id == id));
         }
 
-        public Task<IEnumerable<T>> GetBySpecificationAsync(Func<T, bool> predicate)
+        public Task<IEnumerable<T>> GetBySpecificationAsync(Expression<Func<T, bool>> predicate)
         {
-            return Task.FromResult(_items.Where(predicate));
+            return Task.FromResult(_items.Where(predicate.Compile()));
         }
 
         public Task<bool> AddAsync(T item)

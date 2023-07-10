@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodel="clr-namespace:TodoReward.ViewModels"
-             xmlns:model="clr-namespace:TodoReward.BusinessLayer.Models;assembly=TodoReward.BusinessLayer"
+             xmlns:model="clr-namespace:TodoReward.Core.Models;assembly=TodoReward.Core"
              x:Class="TodoReward.Pages.AddItemPage"
              x:DataType="viewmodel:AddItemViewModel"
              Title="Add">

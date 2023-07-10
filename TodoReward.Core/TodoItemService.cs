@@ -1,10 +1,8 @@
-﻿using TodoReward.BusinessLayer.Interfaces;
-using TodoReward.BusinessLayer.Models;
+﻿using TodoReward.Core.Interfaces;
+using TodoReward.Core.Models;
 
-namespace TodoReward.BusinessLayer
+namespace TodoReward.Core
 {
-
-
     public class TodoItemService : ITodoItemService
     {
         private readonly IRewardService _rewardService;
@@ -41,7 +39,7 @@ namespace TodoReward.BusinessLayer
 
             var reward = await _rewardService.GenerateRandomAsync();
 
-            user.Rewards.Add(reward);
+            user.Rewards.Add(new UserReward { Reward = reward });
 
             return reward;
         }

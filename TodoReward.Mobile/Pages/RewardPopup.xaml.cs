@@ -1,5 +1,5 @@
 using CommunityToolkit.Maui.Views;
-using TodoReward.BusinessLayer.Models;
+using TodoReward.Core.Models;
 
 namespace TodoReward.Pages;
 

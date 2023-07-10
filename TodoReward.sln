@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31611.283
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoReward.Mobile", "TodoReward\TodoReward.Mobile.csproj", "{1192D365-0E5E-4324-A775-5CE0996E57DF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoReward.BusinessLayer.Tests", "TodoReward.Tests\TodoReward.BusinessLayer.Tests.csproj", "{06F7F597-93E4-4107-8B1B-E98B3C551042}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoReward.BusinessLayer", "TodoReward.BusinessLayer\TodoReward.BusinessLayer.csproj", "{41CE057D-B679-4D9E-873A-3D4AE8215574}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoReward.BusinessLayer.Tests", "TodoReward.Tests\TodoReward.BusinessLayer.Tests.csproj", "{06F7F597-93E4-4107-8B1B-E98B3C551042}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A78DF3B2-938D-41E1-BFE2-C2BD4FA6D497}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoReward.Core", "TodoReward.Core\TodoReward.Core.csproj", "{83C208E0-0DEF-4EC0-877D-4EF904119F16}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoReward.Infrastructure", "TodoReward.Infrastructure\TodoReward.Infrastructure.csproj", "{2D427BDD-5D05-4648-80D6-345C3F935EA5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoReward.Mobile", "TodoReward.Mobile\TodoReward.Mobile.csproj", "{FFDA8DD3-F4D5-4801-9877-6E7C4EBDC2CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,20 +19,24 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1192D365-0E5E-4324-A775-5CE0996E57DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1192D365-0E5E-4324-A775-5CE0996E57DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1192D365-0E5E-4324-A775-5CE0996E57DF}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{1192D365-0E5E-4324-A775-5CE0996E57DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1192D365-0E5E-4324-A775-5CE0996E57DF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1192D365-0E5E-4324-A775-5CE0996E57DF}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{06F7F597-93E4-4107-8B1B-E98B3C551042}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{06F7F597-93E4-4107-8B1B-E98B3C551042}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06F7F597-93E4-4107-8B1B-E98B3C551042}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06F7F597-93E4-4107-8B1B-E98B3C551042}.Release|Any CPU.Build.0 = Release|Any CPU
-		{41CE057D-B679-4D9E-873A-3D4AE8215574}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{41CE057D-B679-4D9E-873A-3D4AE8215574}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{41CE057D-B679-4D9E-873A-3D4AE8215574}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{41CE057D-B679-4D9E-873A-3D4AE8215574}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83C208E0-0DEF-4EC0-877D-4EF904119F16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83C208E0-0DEF-4EC0-877D-4EF904119F16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83C208E0-0DEF-4EC0-877D-4EF904119F16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83C208E0-0DEF-4EC0-877D-4EF904119F16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D427BDD-5D05-4648-80D6-345C3F935EA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D427BDD-5D05-4648-80D6-345C3F935EA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D427BDD-5D05-4648-80D6-345C3F935EA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D427BDD-5D05-4648-80D6-345C3F935EA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFDA8DD3-F4D5-4801-9877-6E7C4EBDC2CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFDA8DD3-F4D5-4801-9877-6E7C4EBDC2CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFDA8DD3-F4D5-4801-9877-6E7C4EBDC2CB}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{FFDA8DD3-F4D5-4801-9877-6E7C4EBDC2CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFDA8DD3-F4D5-4801-9877-6E7C4EBDC2CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFDA8DD3-F4D5-4801-9877-6E7C4EBDC2CB}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
