@@ -1,71 +1,65 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System.Linq.Expressions;
-using System.Reflection.Metadata;
 using TodoReward.Core.Interfaces;
 using TodoReward.Core.Models;
 
 namespace TodoReward.Infrastructure.Repositories;
 
-public class TodoContext : DbContext
-{
-    public TodoContext()
-    {
-        Database.EnsureCreated();
-    }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseSqlite("Data Source=C:\\MyApp\\todo.sqlite3");
-    }
-
-    public DbSet<TodoItem> TodoItems { get; set; }
-    public DbSet<User> Users { get; set; }
-    public DbSet<Reward> Rewards { get; set; }
-    public DbSet<UserReward> UserRewards { get; set; }
-
-}
-
 public class LocalDbRepository<T> : IGenericRepository<T> where T : BaseEntity, new()
 {
-    private readonly DbContext _dbContext;
-    private readonly DbSet<T> _dbSet;
+    private readonly DbContextOptionsBuilder<MyDbContext> _optionsBuilder;
 
-    public LocalDbRepository(DbContext dbContext)
+    public LocalDbRepository(IOptions<DbContextOptionsBuilder<MyDbContext>> optionsBuilder)
     {
-        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-        _dbSet = _dbContext.Set<T>();
+        _optionsBuilder = optionsBuilder.Value;
     }
 
     public async Task<IEnumerable<T>> GetAllAsync()
     {
-        return await _dbSet.AsNoTracking().ToListAsync();
+        using var ctx = new MyDbContext(_optionsBuilder.Options);
+
+        return await ctx.Set<T>().ToListAsync();
     }
 
     public async Task<T?> GetByIdAsync(Guid id)
     {
-        return await _dbSet.FindAsync(id);
+        using var ctx = new MyDbContext(_optionsBuilder.Options);
+
+        return await ctx.Set<T>().SingleOrDefaultAsync(e => e.Id == id);
     }
 
     public async Task<IEnumerable<T>> GetBySpecificationAsync(Expression<Func<T, bool>> predicate)
     {
-        return await _dbSet.Where(predicate).ToListAsync();
+        using var ctx = new MyDbContext(_optionsBuilder.Options);
+
+        return await ctx.Set<T>().Where(predicate).ToListAsync();
     }
 
     public async Task<bool> AddAsync(T item)
     {
-        await _dbSet.AddAsync(item);
-        return await _dbContext.SaveChangesAsync() > 0;
+        if (item is null)
+        {
+            throw new ArgumentNullException(nameof(item));
+        }
+
+        using var ctx = new MyDbContext(_optionsBuilder.Options);
+
+        await ctx.Set<T>().AddAsync(item);
+        return await ctx.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> UpdateAsync(Guid id, T item)
     {
-        var existing = await _dbSet.FindAsync(id);
-        if (existing == null)
+        if (item is null)
         {
-            return false;
+            throw new ArgumentNullException(nameof(item));
         }
 
-        _dbContext.Entry(existing).CurrentValues.SetValues(item);
-        return await _dbContext.SaveChangesAsync() > 0;
+        using var ctx = new MyDbContext(_optionsBuilder.Options);
+
+        ctx.Update(item);
+
+        return await ctx.SaveChangesAsync() > 0;
     }
 }

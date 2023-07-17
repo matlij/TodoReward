@@ -14,10 +14,10 @@
                         SelectedItem="{Binding SelectedReward}"
                         SelectionChangedCommand="{Binding UseRewardCommand}">
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="{x:Type model:Reward}">
+                <DataTemplate x:DataType="{x:Type model:UserReward}">
                     <StackLayout Padding="10">
-                        <Label Text="{Binding Title}" FontSize="16" FontAttributes="Bold"/>
-                        <Label Text="{Binding Description}" />
+                        <Label Text="{Binding Reward.Title}" FontSize="16" FontAttributes="Bold"/>
+                        <Label Text="{Binding Reward.Description}" />
                     </StackLayout>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

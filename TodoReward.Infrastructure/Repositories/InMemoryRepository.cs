@@ -6,22 +6,13 @@ using TodoReward.Core.Models;
 
 namespace TodoReward.Infrastructure.Repositories
 {
-    public class MyDefaultFaker<T> : AutoFaker<T> where T : class
-    {
-        public MyDefaultFaker()
-        {
-            var rnd = new Random();
-            RuleForType(typeof(int), f => rnd.Next(1, 4));
-        }
-    }
-
     public class InMemoryRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         private readonly IList<T> _items;
 
         public InMemoryRepository()
         {
-            var faker = new MyDefaultFaker<T>();
+            var faker = new MyDefaultFaker();
             _items = faker.GenerateBetween(19, 20);
         }
 
@@ -62,6 +53,15 @@ namespace TodoReward.Infrastructure.Repositories
             existing = item;
 
             return Task.FromResult(true);
+        }
+
+        private class MyDefaultFaker : AutoFaker<T>
+        {
+            public MyDefaultFaker()
+            {
+                var rnd = new Random();
+                RuleForType(typeof(int), f => rnd.Next(1, 4));
+            }
         }
     }
 }
