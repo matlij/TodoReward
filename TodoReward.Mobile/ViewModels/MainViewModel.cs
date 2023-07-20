@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using TodoReward.Core.Interfaces;
@@ -42,11 +43,11 @@ namespace TodoReward.ViewModels
                 var result = await _itemService.CompleteItemAsync(selectedItem);
                 if (result.result == false)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Error!", "Couldent't complete todo item", "OK");
+                    await Application.Current.MainPage.DisplayAlert("Error!", "Couldn't complete todo item", "OK");
                 }
-                if (result.reward is not null)
+                if (result.result && result.reward is not null)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Reward!", "You have received a reward", "OK");
+                    await Application.Current.MainPage.DisplaySnackbar("Nice job! You have received a reward", duration: TimeSpan.FromSeconds(3));
                 }
 
                 Items.Remove(selectedItem);
