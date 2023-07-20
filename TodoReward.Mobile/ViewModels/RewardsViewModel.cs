@@ -11,7 +11,7 @@ namespace TodoReward.ViewModels
 {
     public partial class RewardViewModel : ObservableObject
     {
-        private readonly IGenericRepository<User> _repository;
+        private readonly IGenericRepository<UserReward> _userRewardRepository;
         private readonly Stack<UserReward> _usedRewards = new();
 
         [ObservableProperty]
@@ -25,9 +25,9 @@ namespace TodoReward.ViewModels
 
         private readonly Timer _disableUndoButtonTimer;
 
-        public RewardViewModel(IGenericRepository<User> repository)
+        public RewardViewModel(IGenericRepository<UserReward> userRewardRepository)
         {
-            _repository = repository;
+            _userRewardRepository = userRewardRepository;
             _disableUndoButtonTimer = new Timer(TimeSpan.FromSeconds(10));
             _disableUndoButtonTimer.Elapsed += OnDisableUndoEvent;
             _disableUndoButtonTimer.AutoReset = false;
@@ -36,35 +36,41 @@ namespace TodoReward.ViewModels
 
         public async Task Init()
         {
-            var rewards = await GetUserRewards();
-            PopulateRewardsCollection(rewards);
+            var rewards = await _userRewardRepository.GetBySpecificationAsync(
+                r => r.UserId == ModelConstants.UserId && r.IsDone == false);
+
+            Rewards.Clear();
+            foreach (var item in rewards)
+            {
+                Rewards.Add(item);
+            }
         }
 
         [RelayCommand]
         private async Task UseReward()
         {
-            if (SelectedReward is null)
+            var result = await UpdateReward(SelectedReward, isDone: true);
+            if (result == false)
                 return;
 
-            var user = await GetUser();
-            RemoveFromList(user.Rewards, SelectedReward.Id);
             RemoveFromList(Rewards, SelectedReward.Id);
 
             _usedRewards.Push(SelectedReward);
-
-            SelectedReward = null;
             CanUndo = true;
             _disableUndoButtonTimer.Enabled = true;
+
+            SelectedReward = null;
         }
 
         [RelayCommand]
         private async Task UndoUsedReward()
         {
-            var user = await GetUser();
-
             foreach (var reward in _usedRewards)
             {
-                user.Rewards.Add(reward);
+                var result = await UpdateReward(reward, isDone: false);
+                if (result == false)
+                    return;
+
                 Rewards.Add(reward);
             }
 
@@ -72,12 +78,29 @@ namespace TodoReward.ViewModels
             CanUndo = false;
         }
 
+        private async Task<bool> UpdateReward(UserReward reward, bool isDone)
+        {
+            if (reward is null)
+                return false;
+
+            reward.IsDone = isDone;
+
+            var result = await _userRewardRepository.UpdateAsync(reward.Id, reward);
+            if (!result)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "Update reward failed", "OK");
+                return false;
+            }
+
+            return true;
+        }
+
         private bool RemoveFromList(IList<UserReward> rewards, Guid idToRemove)
         {
             var rewardToRemove = rewards.SingleOrDefault(r => r.Id == idToRemove);
             if (rewardToRemove is null)
             {
-                Debug.WriteLine("Failed to remove Reward with ID " +  idToRemove);
+                Debug.WriteLine("Failed to remove Reward with ID " + idToRemove);
                 return false;
             }
             return rewards.Remove(rewardToRemove);
@@ -87,29 +110,6 @@ namespace TodoReward.ViewModels
         {
             Debug.WriteLine($"The hide undo button timer was raised at {e.SignalTime}");
             CanUndo = false;
-        }
-
-        private async Task<IEnumerable<UserReward>> GetUserRewards()
-        {
-            var user = await GetUser();
-
-            return user.Rewards;
-        }
-
-        private async Task<User> GetUser()
-        {
-            var users = await _repository.GetAllAsync();
-            return users.First();
-        }
-
-        private void PopulateRewardsCollection(IEnumerable<UserReward> rewards)
-        {
-            Rewards.Clear();
-
-            foreach (var item in rewards)
-            {
-                Rewards.Add(item);
-            }
         }
     }
 }
