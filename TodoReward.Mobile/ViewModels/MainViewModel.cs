@@ -47,7 +47,7 @@ namespace TodoReward.ViewModels
                 }
                 if (result.result && result.reward is not null)
                 {
-                    await Application.Current.MainPage.DisplaySnackbar("Nice job! You have received a reward", duration: TimeSpan.FromSeconds(3));
+                    await Application.Current.MainPage.DisplaySnackbar($"Nice job! You have received a reward: {result.reward.Title}", duration: TimeSpan.FromSeconds(3));
                 }
 
                 Items.Remove(selectedItem);

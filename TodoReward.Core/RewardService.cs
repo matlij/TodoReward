@@ -12,6 +12,10 @@ namespace TodoReward.Core
             _repository = repository;
         }
 
+        /// <summary>
+        /// Returns a random reward based on the <see cref="Reward.Propability"/> property value
+        /// </summary>
+        /// <returns></returns>
         public async Task<Reward> GenerateRandomAsync()
         {
             var rewards = (await _repository.GetAllAsync()).ToArray();
@@ -20,11 +24,26 @@ namespace TodoReward.Core
                 return new Reward() { Title = "Unknown" };
             }
 
-            var rnd = new Random();
-            var i = rnd.Next(rewards.Length - 1);
-            var rndReward = rewards[i];
+            var pot = GeneratePot(rewards);
+            return GetRandomRewardFromPot(pot, rewards);
+        }
 
-            return rndReward;
+        private static Reward GetRandomRewardFromPot(IList<Guid> pot, IEnumerable<Reward> rewards)
+        {
+            var rnd = new Random();
+
+            var i = rnd.Next(pot.Count - 1);
+            
+            var rndRewardId = pot[i];
+
+            return rewards.Single(r => r.Id == rndRewardId);
+        }
+
+        private static IList<Guid> GeneratePot(Reward[] rewards)
+        {
+            return rewards
+                .SelectMany(r => Enumerable.Repeat(r.Id, r.Propability))
+                .ToList();
         }
     }
 }

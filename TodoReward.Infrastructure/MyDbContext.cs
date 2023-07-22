@@ -22,8 +22,19 @@ public class MyDbContext : DbContext
     {
         var rewards = new Reward[]
         {
-            new Reward { Title = "HBO 30 min" },
-            new Reward { Title = "Beer" },
+            new Reward { Title = "15 min streaming", Propability = 1000 },
+            new Reward { Title = "15 min gaming", Propability = 500 },
+            new Reward { Title = "30 min podcast", Propability = 1000 },
+            new Reward { Title = "30 min book reading", Propability = 500 },
+            new Reward { Title = "One beer", Propability = 1000 },
+            new Reward { Title = "One candy", Propability = 500 },
+            new Reward { Title = "One soda", Propability = 500 },
+            new Reward { Title = "One cup of coffea", Propability = 1000 },
+            new Reward { Title = "One cup of tea", Propability = 1000 },
+            new Reward { Title = "Outside lunch", Propability = 100 },
+            new Reward { Title = "Dessert after dinner", Propability = 100 },    
+            new Reward { Title = "Home made Pizza", Propability = 200 },
+            new Reward { Title = "Weekend", Propability = 10 }
         };
         modelBuilder.Entity<Reward>().HasData(rewards);
 

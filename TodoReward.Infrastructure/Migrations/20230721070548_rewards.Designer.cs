@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TodoReward.Infrastructure;
 
@@ -10,9 +11,11 @@ using TodoReward.Infrastructure;
 namespace TodoReward.Infrastructure.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230721070548_rewards")]
+    partial class rewards
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.9");
@@ -27,9 +30,6 @@ namespace TodoReward.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Propability")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -41,94 +41,63 @@ namespace TodoReward.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("ced0f252-ac53-4dd5-92dd-b638e1f26166"),
+                            Id = new Guid("d17a2923-5740-46e4-aca8-e9e5b1357de1"),
                             Description = "",
-                            Propability = 1000,
                             Title = "15 min streaming"
                         },
                         new
                         {
-                            Id = new Guid("14110cf4-c6df-4ad0-9896-f2e810ba97fd"),
+                            Id = new Guid("40329088-69a8-4f90-b236-4aad5c5a5ffa"),
                             Description = "",
-                            Propability = 500,
                             Title = "15 min gaming"
                         },
                         new
                         {
-                            Id = new Guid("5fa2a748-eda6-40d0-8483-b4e7810b03b1"),
+                            Id = new Guid("4fcb7677-7a2c-4cb6-addc-4f404ebc65fc"),
                             Description = "",
-                            Propability = 1000,
                             Title = "30 min podcast"
                         },
                         new
                         {
-                            Id = new Guid("c8b940bc-ea11-4374-9459-40e01ba45655"),
+                            Id = new Guid("cddba36a-449e-4272-bfa2-cf68d3bb8c75"),
                             Description = "",
-                            Propability = 500,
-                            Title = "30 min book reading"
-                        },
-                        new
-                        {
-                            Id = new Guid("cdf7ecd9-65a3-4018-9977-74b17972cc32"),
-                            Description = "",
-                            Propability = 1000,
                             Title = "One beer"
                         },
                         new
                         {
-                            Id = new Guid("10266726-06d6-4436-b50c-4681ba4e54d2"),
+                            Id = new Guid("3c85a296-29f5-441d-a3a1-f5bb4821def5"),
                             Description = "",
-                            Propability = 500,
                             Title = "One candy"
                         },
                         new
                         {
-                            Id = new Guid("eb487fb3-db38-49da-9589-6f2e4e094163"),
+                            Id = new Guid("fbb2b8cb-3d69-4389-a2d1-35ad1e50f354"),
                             Description = "",
-                            Propability = 500,
                             Title = "One soda"
                         },
                         new
                         {
-                            Id = new Guid("9f382d1f-2c4b-4ab0-b1b6-630ae81c2756"),
+                            Id = new Guid("60b5108e-97b3-4f55-a9cb-f89048ab7875"),
                             Description = "",
-                            Propability = 1000,
                             Title = "One cup of coffea"
                         },
                         new
                         {
-                            Id = new Guid("a4ad72ee-2819-4b2a-8b85-b276a8603384"),
+                            Id = new Guid("062a0330-3dc5-44a1-8c0d-8497d1cbd953"),
                             Description = "",
-                            Propability = 1000,
                             Title = "One cup of tea"
                         },
                         new
                         {
-                            Id = new Guid("18e123fb-c137-4d13-848e-02dfda142035"),
+                            Id = new Guid("7e8728e5-fd75-4ca9-ba0b-d990033f6e82"),
                             Description = "",
-                            Propability = 100,
                             Title = "Outside lunch"
                         },
                         new
                         {
-                            Id = new Guid("e618ff57-83e1-457e-b84e-90c6c804b82b"),
+                            Id = new Guid("2ef7d9ef-42da-4e1a-9e5f-70c9a81ebed0"),
                             Description = "",
-                            Propability = 100,
                             Title = "Dessert after dinner"
-                        },
-                        new
-                        {
-                            Id = new Guid("554472ee-c6ea-4b5b-bee1-3b89127ce09c"),
-                            Description = "",
-                            Propability = 200,
-                            Title = "Home made Pizza"
-                        },
-                        new
-                        {
-                            Id = new Guid("17e67d46-272d-4e35-ba74-e15c33d242e8"),
-                            Description = "",
-                            Propability = 10,
-                            Title = "Weekend"
                         });
                 });
 
@@ -204,9 +173,9 @@ namespace TodoReward.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("ab7d62f2-86fb-4170-b106-48e9c74bc428"),
+                            Id = new Guid("0b16153e-9b3d-4696-b62c-b58e5e9c9e4c"),
                             IsDone = false,
-                            RewardId = new Guid("ced0f252-ac53-4dd5-92dd-b638e1f26166"),
+                            RewardId = new Guid("d17a2923-5740-46e4-aca8-e9e5b1357de1"),
                             UserId = new Guid("03de3c78-5bda-4429-8147-7096c3d2f91b")
                         });
                 });
