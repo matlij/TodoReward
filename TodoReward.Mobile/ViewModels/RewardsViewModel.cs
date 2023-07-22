@@ -56,7 +56,7 @@ namespace TodoReward.ViewModels
             RemoveFromList(Rewards, SelectedReward.Id);
 
             _usedRewards.Push(SelectedReward);
-            CanUndo = true;
+            CanUndo = _usedRewards.Count > 0;
             _disableUndoButtonTimer.Enabled = true;
 
             SelectedReward = null;
@@ -65,17 +65,20 @@ namespace TodoReward.ViewModels
         [RelayCommand]
         private async Task UndoUsedReward()
         {
-            foreach (var reward in _usedRewards)
+            if (!_usedRewards.TryPeek(out var usedReward))
             {
-                var result = await UpdateReward(reward, isDone: false);
-                if (result == false)
-                    return;
-
-                Rewards.Add(reward);
+                await Application.Current.MainPage.DisplayAlert("Error", "Failed to undo used reward (stack is empty)", "OK");
+                return;
             }
 
-            _usedRewards.Clear();
-            CanUndo = false;
+            var result = await UpdateReward(usedReward, isDone: false);
+            if (result == false)
+                return;
+
+            Rewards.Add(usedReward);
+
+            _usedRewards.Pop();
+            CanUndo = _usedRewards.Count > 0;
         }
 
         private async Task<bool> UpdateReward(UserReward reward, bool isDone)
