@@ -55,6 +55,11 @@ namespace TodoReward.Infrastructure.Repositories
             return Task.FromResult(true);
         }
 
+        public Task<bool> DeleteAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
         private class MyDefaultFaker : AutoFaker<T>
         {
             public MyDefaultFaker()

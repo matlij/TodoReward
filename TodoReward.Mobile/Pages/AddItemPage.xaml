@@ -17,15 +17,24 @@
                    Text="{Binding InputTitle}"
                    ReturnCommand="{Binding AddItemCommand}"/>
             <StackLayout>
-                <Label Text="{Binding InputScore, StringFormat='Points: {0:F0}'}"/>
-                <Slider Value="{Binding InputScore}" 
+                <Label Text="{Binding InputPoints, StringFormat='Points: {0:F0}'}"/>
+                <Slider Value="{Binding InputPoints}" 
                         Maximum="3" 
                         Minimum="1" />
             </StackLayout>
         </StackLayout>
-        <StackLayout Padding="10">
-            <Button Text="Save" Command="{Binding AddItemCommand}" VerticalOptions="EndAndExpand"/>
 
-        </StackLayout>
+        <Grid ColumnSpacing="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button Text="Save" Command="{Binding AddItemCommand}" VerticalOptions="EndAndExpand"/>
+            <Button Text="Delete" Command="{Binding DeleteItemCommand}" VerticalOptions="EndAndExpand" BackgroundColor="IndianRed" Grid.Column="1"/>
+
+        </Grid>
     </StackLayout>
 </ContentPage>

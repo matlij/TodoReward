@@ -49,6 +49,19 @@ public class LocalDbRepository<T> : IGenericRepository<T> where T : BaseEntity, 
         return await ctx.SaveChangesAsync() > 0;
     }
 
+    public async Task<bool> DeleteAsync(Guid id)
+    {
+        using var ctx = new MyDbContext(_optionsBuilder.Options);
+
+        var entityToDelete = await ctx.Set<T>().FindAsync(id);
+        if (entityToDelete is null)
+            return false;
+
+        ctx.Set<T>().Remove(entityToDelete);
+
+        return await ctx.SaveChangesAsync() > 0;
+    }
+
     public async Task<bool> UpdateAsync(Guid id, T item)
     {
         if (item is null)

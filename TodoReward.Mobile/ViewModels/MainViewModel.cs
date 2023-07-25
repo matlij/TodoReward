@@ -11,7 +11,7 @@ namespace TodoReward.ViewModels
     public partial class MainViewModel : ObservableObject
     {
         private readonly IGenericRepository<TodoItem> _itemRepository;
-        private readonly IGenericRepository<User> _efCoreRepository;
+        private readonly IGenericRepository<User> _userRepository;
         private readonly ITodoItemService _itemService;
 
         [ObservableProperty]
@@ -20,11 +20,21 @@ namespace TodoReward.ViewModels
         [ObservableProperty]
         private List<object> _selectedItems = new();
 
-        public MainViewModel(ITodoItemService todoItemService, IGenericRepository<TodoItem> itemRepository, IGenericRepository<User> efCoreRepository)
+        public MainViewModel(ITodoItemService todoItemService, IGenericRepository<TodoItem> itemRepository, IGenericRepository<User> userRepository)
         {
             _itemRepository = itemRepository;
-            _efCoreRepository = efCoreRepository;
+            _userRepository = userRepository;
             _itemService = todoItemService;
+        }
+
+        [RelayCommand]
+        private async Task DeleteItem(TodoItem todoItem)
+        {
+            var navigationParameter = new Dictionary<string, object>
+            {
+                { "TodoItem", todoItem }
+            };
+            await Shell.Current.GoToAsync(nameof(AddItemPage), navigationParameter);
         }
 
         [RelayCommand]
