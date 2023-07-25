@@ -7,11 +7,11 @@
     Shell.FlyoutBehavior="Disabled">
 
     <TabBar>
-        <Tab Icon="listcheck.png"
+        <Tab Icon="listcheck.svg"
             Title="Items">
             <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
         </Tab>
-        <Tab Icon="trophy.png"
+        <Tab Icon="trophy.svg"
              Title="Rewards">
             <ShellContent ContentTemplate="{DataTemplate local:RewardPage}" />
         </Tab>
