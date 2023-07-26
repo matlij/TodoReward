@@ -6,10 +6,13 @@
            x:Class="TodoReward.Pages.RewardPopup"
            x:DataType="model:UserReward">
     <VerticalStackLayout Padding="10">
-        <Label 
-            Text="{Binding Reward.Title}"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+        
+        <Label Text="{Binding Reward.Title}"
+               VerticalOptions="Center" 
+               HorizontalOptions="Center"
+               FontSize="Title"/>
+        <Label Text="{Binding Reward.Description}"/>
+        
         <Grid ColumnSpacing="20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
