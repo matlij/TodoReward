@@ -3,9 +3,9 @@ using TodoReward.ViewModels;
 
 namespace TodoReward.Pages;
 
-public partial class AddItemPage : ContentPage
+public partial class PutItemPage : ContentPage
 {
-	public AddItemPage(AddItemViewModel vm)
+	public PutItemPage(PutItemViewModel vm)
 	{
 		BindingContext = vm;
 

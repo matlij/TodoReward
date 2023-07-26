@@ -5,7 +5,7 @@ using TodoReward.Core.Models;
 
 namespace TodoReward.ViewModels
 {
-    public partial class AddItemViewModel : ObservableObject, IQueryAttributable
+    public partial class PutItemViewModel : ObservableObject, IQueryAttributable
     {
         private readonly IGenericRepository<TodoItem> _repository;
 
@@ -19,7 +19,7 @@ namespace TodoReward.ViewModels
 
         [ObservableProperty]
         private double _inputPoints;
-        public AddItemViewModel(IGenericRepository<TodoItem> repository)
+        public PutItemViewModel(IGenericRepository<TodoItem> repository)
         {
             _repository = repository;
             InputPoints = 1;

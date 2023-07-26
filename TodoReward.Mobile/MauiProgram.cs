@@ -31,11 +31,11 @@ public static class MauiProgram
 #endif
 
         builder.Services.AddTransient<MainPage>();
-        builder.Services.AddTransient<AddItemPage>();
+        builder.Services.AddTransient<PutItemPage>();
         builder.Services.AddTransient<RewardPage>();
 
         builder.Services.AddTransient<MainViewModel>();
-        builder.Services.AddTransient<AddItemViewModel>();
+        builder.Services.AddTransient<PutItemViewModel>();
         builder.Services.AddTransient<RewardViewModel>();
 
         builder.Services.Configure<DatabaseOptions>(options => options.DatabasePath = FileSystem.AppDataDirectory);

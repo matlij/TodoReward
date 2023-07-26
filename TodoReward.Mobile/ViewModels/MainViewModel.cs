@@ -34,13 +34,13 @@ namespace TodoReward.ViewModels
             {
                 { "TodoItem", todoItem }
             };
-            await Shell.Current.GoToAsync(nameof(AddItemPage), navigationParameter);
+            await Shell.Current.GoToAsync(nameof(PutItemPage), navigationParameter);
         }
 
         [RelayCommand]
         private async Task AddItem()
         {
-            await Shell.Current.GoToAsync(nameof(AddItemPage));
+            await Shell.Current.GoToAsync(nameof(PutItemPage));
         }
 
         [RelayCommand]

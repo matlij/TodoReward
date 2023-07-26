@@ -1,10 +1,12 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Timers;
 using TodoReward.Core.Interfaces;
 using TodoReward.Core.Models;
+using TodoReward.Pages;
 using Timer = System.Timers.Timer;
 
 namespace TodoReward.ViewModels
@@ -49,17 +51,28 @@ namespace TodoReward.ViewModels
         [RelayCommand]
         private async Task UseReward()
         {
+            var popup = new RewardPopup(SelectedReward);
+
+            var result = await Shell.Current.ShowPopupAsync(popup);
+
+            if (result is bool boolResult && boolResult)
+            {
+                await UseSelectedReward();
+                SelectedReward = null;
+            }
+        }
+
+        private async Task UseSelectedReward()
+        {
             var result = await UpdateReward(SelectedReward, isDone: true);
-            if (result == false)
-                return;
+            if (result)
+            {
+                RemoveFromList(Rewards, SelectedReward.Id);
 
-            RemoveFromList(Rewards, SelectedReward.Id);
-
-            _usedRewards.Push(SelectedReward);
-            CanUndo = _usedRewards.Count > 0;
-            _disableUndoButtonTimer.Enabled = true;
-
-            SelectedReward = null;
+                _usedRewards.Push(SelectedReward);
+                CanUndo = _usedRewards.Count > 0;
+                _disableUndoButtonTimer.Enabled = true;
+            }
         }
 
         [RelayCommand]

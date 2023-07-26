@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodel="clr-namespace:TodoReward.ViewModels"
              xmlns:model="clr-namespace:TodoReward.Core.Models;assembly=TodoReward.Core"
-             x:Class="TodoReward.Pages.AddItemPage"
-             x:DataType="viewmodel:AddItemViewModel"
+             x:Class="TodoReward.Pages.PutItemPage"
+             x:DataType="viewmodel:PutItemViewModel"
              Title="Add">
     <StackLayout Padding="10" Spacing="10">
             <Label Text="Add new Todo item" 
