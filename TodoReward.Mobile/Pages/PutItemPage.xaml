@@ -5,23 +5,23 @@
              xmlns:model="clr-namespace:TodoReward.Core.Models;assembly=TodoReward.Core"
              x:Class="TodoReward.Pages.PutItemPage"
              x:DataType="viewmodel:PutItemViewModel"
-             Title="Add">
-    <StackLayout Padding="10" Spacing="10">
-            <Label Text="Add new Todo item" 
-                   FontSize="Large"
-                   HorizontalOptions="Center"
-                   Padding="10"/>
-        <StackLayout Padding="10" Spacing="40" VerticalOptions="StartAndExpand">
+             Title="{Binding Title}">
+    <StackLayout Padding="10">
+        <StackLayout Padding="10" Spacing="20" VerticalOptions="StartAndExpand">
             <Entry x:Name="TodoTitleEntry" 
                    Placeholder="Title" 
                    Text="{Binding InputTitle}"
-                   ReturnCommand="{Binding AddItemCommand}"/>
+                   ReturnCommand="{Binding AddOrUpdateItemCommand}"/>
             <StackLayout>
                 <Label Text="{Binding InputPoints, StringFormat='Points: {0:F0}'}"/>
                 <Slider Value="{Binding InputPoints}" 
                         Maximum="3" 
                         Minimum="1" />
             </StackLayout>
+            <HorizontalStackLayout>
+                <Label VerticalOptions="Center" Text="Add to todays todo list:"/>
+                <CheckBox IsChecked="{Binding IsPartOfDailyList, Mode=TwoWay}" />
+            </HorizontalStackLayout>
         </StackLayout>
 
         <Grid ColumnSpacing="20">
@@ -32,9 +32,8 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Button Text="Save" Command="{Binding AddItemCommand}" VerticalOptions="EndAndExpand"/>
+            <Button Text="Save" Command="{Binding AddOrUpdateItemCommand}" VerticalOptions="EndAndExpand"/>
             <Button Text="Delete" Command="{Binding DeleteItemCommand}" VerticalOptions="EndAndExpand" BackgroundColor="IndianRed" Grid.Column="1"/>
-
         </Grid>
     </StackLayout>
 </ContentPage>

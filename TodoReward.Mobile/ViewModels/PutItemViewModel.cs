@@ -14,29 +14,45 @@ namespace TodoReward.ViewModels
         private Guid? _id;
 
         [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(AddItemCommand))]
+        [NotifyCanExecuteChangedFor(nameof(AddOrUpdateItemCommand))]
         private string _inputTitle = string.Empty;
 
         [ObservableProperty]
         private double _inputPoints;
+        [ObservableProperty]
+        private bool _isPartOfDailyList;
+
+        [ObservableProperty]
+        private string _title;
+
         public PutItemViewModel(IGenericRepository<TodoItem> repository)
         {
             _repository = repository;
             InputPoints = 1;
+            IsPartOfDailyList = true;
         }
 
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
             if (query.TryGetValue("TodoItem", out var item) && item is TodoItem todoItem)
             {
+                Title = "Update Todo item";
+
                 InputTitle = todoItem.Title;
                 InputPoints = todoItem.Points;
                 Id = todoItem.Id;
+                IsPartOfDailyList = todoItem.IsPartOfDailyTodoList;
+            }
+            else
+            {
+                Title = "Add new Todo item";
+
+                IsPartOfDailyList = true;
             }
         }
 
         [RelayCommand(CanExecute = nameof(CanSaveItem))]
-        private async Task AddItem()
+        private async Task AddOrUpdateItem()
         {
             var scoreInt = Convert.ToInt32(InputPoints);
 
@@ -44,7 +60,8 @@ namespace TodoReward.ViewModels
             {
                 Id = GuidIsNullOrEmpty(Id) ? Guid.NewGuid() : (Guid)Id,
                 Points = scoreInt,
-                Title = InputTitle
+                Title = InputTitle,
+                IsPartOfDailyTodoList = IsPartOfDailyList
             };
 
             var result = GuidIsNullOrEmpty(Id)
@@ -63,6 +80,12 @@ namespace TodoReward.ViewModels
         private async Task DeleteItem()
         {
             if (Id is null)
+            {
+                return;
+            }
+
+            var userInput = await Application.Current.MainPage.DisplayAlert("Delete todo item?", "Are you sure you want to delete this item?", "Yes", "Cancel");
+            if (userInput == false)
             {
                 return;
             }
