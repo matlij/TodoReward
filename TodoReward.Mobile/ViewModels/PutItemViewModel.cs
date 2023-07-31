@@ -11,7 +11,7 @@ namespace TodoReward.ViewModels
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(DeleteItemCommand))]
-        private Guid? _id;
+        private Guid? _todoId;
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(AddOrUpdateItemCommand))]
@@ -40,7 +40,7 @@ namespace TodoReward.ViewModels
 
                 InputTitle = todoItem.Title;
                 InputPoints = todoItem.Points;
-                Id = todoItem.Id;
+                TodoId = todoItem.Id;
                 IsPartOfDailyList = todoItem.IsPartOfDailyTodoList;
             }
             else
@@ -58,13 +58,13 @@ namespace TodoReward.ViewModels
 
             var item = new TodoItem
             {
-                Id = GuidIsNullOrEmpty(Id) ? Guid.NewGuid() : (Guid)Id,
+                Id = GuidIsNullOrEmpty(TodoId) ? Guid.NewGuid() : (Guid)TodoId,
                 Points = scoreInt,
                 Title = InputTitle,
                 IsPartOfDailyTodoList = IsPartOfDailyList
             };
 
-            var result = GuidIsNullOrEmpty(Id)
+            var result = GuidIsNullOrEmpty(TodoId)
                 ? await _repository.AddAsync(item)
                 : await _repository.UpdateAsync(item.Id, item);
 
@@ -79,7 +79,7 @@ namespace TodoReward.ViewModels
         [RelayCommand(CanExecute = nameof(CanDeleteItem))]
         private async Task DeleteItem()
         {
-            if (Id is null)
+            if (TodoId is null)
             {
                 return;
             }
@@ -90,7 +90,7 @@ namespace TodoReward.ViewModels
                 return;
             }
 
-            var result = await _repository.DeleteAsync((Guid)Id);
+            var result = await _repository.DeleteAsync((Guid)TodoId);
 
             if (!result)
             {
@@ -110,7 +110,7 @@ namespace TodoReward.ViewModels
 
         private bool CanDeleteItem()
         {
-            return GuidIsNullOrEmpty(Id) == false;
+            return GuidIsNullOrEmpty(TodoId) == false;
         }
 
         private static bool GuidIsNullOrEmpty(Guid? guid) => guid is null || guid == Guid.Empty;

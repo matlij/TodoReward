@@ -13,12 +13,16 @@ namespace TodoReward.ViewModels
         private readonly IGenericRepository<TodoItem> _itemRepository;
         private readonly IGenericRepository<User> _userRepository;
         private readonly ITodoItemService _itemService;
+        private IEnumerable<TodoItem> _items = Enumerable.Empty<TodoItem>();
 
         [ObservableProperty]
-        private ObservableCollection<TodoItem> _items = new();
+        private ObservableCollection<TodoItem> _itemsCollection = new();
 
         [ObservableProperty]
         private List<object> _selectedItems = new();
+
+        [ObservableProperty]
+        private bool _showAllTodoItems = new();
 
         public MainViewModel(ITodoItemService todoItemService, IGenericRepository<TodoItem> itemRepository, IGenericRepository<User> userRepository)
         {
@@ -28,6 +32,13 @@ namespace TodoReward.ViewModels
         }
 
         [RelayCommand]
+        private void ToggleShowAllItems()
+        {
+            ShowAllTodoItems = !ShowAllTodoItems;
+            PopulateItemsCollection(ShowAllTodoItems);
+        }
+
+            [RelayCommand]
         private async Task DeleteItem(TodoItem todoItem)
         {
             var navigationParameter = new Dictionary<string, object>
@@ -60,23 +71,31 @@ namespace TodoReward.ViewModels
                     await Application.Current.MainPage.DisplaySnackbar($"Nice job! You have received a reward: {result.reward.Title}", duration: TimeSpan.FromSeconds(3));
                 }
 
-                Items.Remove(selectedItem);
+                ItemsCollection.Remove(selectedItem);
             }
         }
 
         public async Task Init()
         {
             await LoadItemsAsync();
+            PopulateItemsCollection(ShowAllTodoItems);
         }
 
         private async Task LoadItemsAsync()
         {
-            Items.Clear();
+            _items = await _itemRepository.GetBySpecificationAsync(item => !item.IsCompleted);
+        }
 
-            var items = await _itemRepository.GetBySpecificationAsync(item => !item.IsCompleted);
+        private void PopulateItemsCollection(bool showAllTodoItems)
+        {
+            var items = showAllTodoItems
+                ? _items
+                : _items.Where(item => item.IsPartOfDailyTodoList);
+
+            ItemsCollection.Clear();
             foreach (var item in items)
             {
-                Items.Add(item);
+                ItemsCollection.Add(item);
             }
         }
     }
