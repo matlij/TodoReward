@@ -14,7 +14,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <StackLayout Padding="10,10,10,30" Spacing="10">
-        <Button Text="Daily todos" 
+        <Button Text="Show all" 
                 WidthRequest="100" 
                 HeightRequest="25" 
                 FontSize="Micro" 
@@ -22,19 +22,20 @@
                 HorizontalOptions="End"
                 Command="{Binding ToggleShowAllItemsCommand}">
             <Button.Triggers>
-                <DataTrigger TargetType="Button" Binding="{Binding ShowAllTodoItems}" Value="True">
+                <DataTrigger TargetType="Button" Binding="{Binding ShowAllItems}" Value="False">
                     <Setter Property="BackgroundColor" Value="{StaticResource Gray200}" />
                 </DataTrigger>
-                <DataTrigger TargetType="Button" Binding="{Binding ShowAllTodoItems}" Value="False">
+                <DataTrigger TargetType="Button" Binding="{Binding ShowAllItems}" Value="True">
                     <Setter Property="BackgroundColor" Value="DarkOrange" />
                 </DataTrigger>
             </Button.Triggers>
         </Button>
-        <CollectionView x:Name="ItemsCollectionView"
-                        ItemsSource="{Binding ItemsCollection}"
+        <Label Text="Todays"/>
+        <CollectionView x:Name="TodaysItemsCollectionView"
+                        ItemsSource="{Binding TodaysItems}"
                         VerticalOptions="FillAndExpand"
                         SelectionMode="Multiple"
-                        SelectedItems="{Binding SelectedItems, Mode=TwoWay}">
+                        SelectedItems="{Binding SelectedTodaysItems, Mode=TwoWay}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <SwipeView>
@@ -57,17 +58,66 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Grid ColumnSpacing="20">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Button Text="Complete" Command="{Binding CompleteItemsCommand}"/>
-            <Button Text="Add" Grid.Column="1" Command="{Binding AddItemCommand}"/>
-        </Grid>
+        <Label Text="Backlog" IsVisible="{Binding ShowAllItems}"/>
+        <CollectionView x:Name="ItemsCollectionView"
+                        ItemsSource="{Binding Items}"
+                        VerticalOptions="FillAndExpand"
+                        SelectionMode="Multiple"
+                        SelectedItems="{Binding SelectedItems, Mode=TwoWay}"
+                        IsVisible="{Binding ShowAllItems}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItems Mode="Execute">
+                                <SwipeItem Text="Edit"
+                                           IconImageSource="edit.svg"
+                                           Command="{Binding Source={RelativeSource AncestorType={x:Type pages:MainPage}}, Path=BindingContext.DeleteItemCommand}"
+                                           CommandParameter="{Binding .}"/>
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+                        <!-- Content -->
+                        <StackLayout Padding="10" x:DataType="model:TodoItem">
+                            <Label Text="{Binding Title}" FontSize="Subtitle" />
+                            <Label Text="{Binding Points, StringFormat='Points: {0}'}" FontSize="Micro"/>
+                        </StackLayout>
+                    </SwipeView>
+
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Button Text="Add todo" Command="{Binding AddItemCommand}" IsVisible="false" BackgroundColor="{StaticResource Gray100}">
+            <Button.Triggers>
+                <MultiTrigger TargetType="Button">
+                    <MultiTrigger.Conditions>
+                        <BindingCondition Binding="{Binding Source={x:Reference TodaysItemsCollectionView}, Path=SelectedItems.Count}" 
+                                          Value="0" />
+                        <BindingCondition Binding="{Binding Source={x:Reference ItemsCollectionView}, Path=SelectedItems.Count}" 
+                                          Value="0" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="IsVisible" Value="True" />
+                </MultiTrigger>
+            </Button.Triggers>
+        </Button>
+        <Button Text="Complete" Command="{Binding CompleteItemsCommand}" BackgroundColor="{StaticResource Cyan100Accent}">
+            <Button.Triggers>
+                <DataTrigger TargetType="Button"
+                                 Binding="{Binding Source={x:Reference TodaysItemsCollectionView}, Path=SelectedItems.Count}"
+                                 Value="0">
+                    <Setter Property="IsVisible" Value="False" />
+                </DataTrigger>
+            </Button.Triggers>
+        </Button>
+        <Button Text="Move to todays list" Command="{Binding MoveSelectedItemsToTodaysListCommand}" BackgroundColor="{StaticResource Blue100Accent}">
+            <Button.Triggers>
+                <DataTrigger TargetType="Button"
+                             Binding="{Binding Source={x:Reference ItemsCollectionView}, Path=SelectedItems.Count}"
+                             Value="0">
+                    <Setter Property="IsVisible" Value="False" />
+                </DataTrigger>
+            </Button.Triggers>
+        </Button>
     </StackLayout>
 </ContentPage>
  

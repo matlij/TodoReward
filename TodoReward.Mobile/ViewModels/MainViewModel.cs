@@ -13,16 +13,21 @@ namespace TodoReward.ViewModels
         private readonly IGenericRepository<TodoItem> _itemRepository;
         private readonly IGenericRepository<User> _userRepository;
         private readonly ITodoItemService _itemService;
-        private IEnumerable<TodoItem> _items = Enumerable.Empty<TodoItem>();
 
         [ObservableProperty]
-        private ObservableCollection<TodoItem> _itemsCollection = new();
+        private ObservableCollection<TodoItem> _todaysItems = new();
 
         [ObservableProperty]
-        private List<object> _selectedItems = new();
+        private ObservableCollection<TodoItem> _items = new();
 
         [ObservableProperty]
-        private bool _showAllTodoItems = new();
+        private ObservableCollection<object> _selectedItems = new();
+
+        [ObservableProperty]
+        private ObservableCollection<object> _selectedTodaysItems = new();
+
+        [ObservableProperty]
+        private bool _showAllItems;
 
         public MainViewModel(ITodoItemService todoItemService, IGenericRepository<TodoItem> itemRepository, IGenericRepository<User> userRepository)
         {
@@ -34,11 +39,10 @@ namespace TodoReward.ViewModels
         [RelayCommand]
         private void ToggleShowAllItems()
         {
-            ShowAllTodoItems = !ShowAllTodoItems;
-            PopulateItemsCollection(ShowAllTodoItems);
+            ShowAllItems = !ShowAllItems;
         }
 
-            [RelayCommand]
+        [RelayCommand]
         private async Task DeleteItem(TodoItem todoItem)
         {
             var navigationParameter = new Dictionary<string, object>
@@ -57,7 +61,7 @@ namespace TodoReward.ViewModels
         [RelayCommand]
         private async Task CompleteItems()
         {
-            var selectedItemsCopy = new List<TodoItem>(SelectedItems.Cast<TodoItem>());
+            var selectedItemsCopy = new List<TodoItem>(SelectedTodaysItems.Cast<TodoItem>());
 
             foreach (var selectedItem in selectedItemsCopy)
             {
@@ -71,31 +75,52 @@ namespace TodoReward.ViewModels
                     await Application.Current.MainPage.DisplaySnackbar($"Nice job! You have received a reward: {result.reward.Title}", duration: TimeSpan.FromSeconds(3));
                 }
 
-                ItemsCollection.Remove(selectedItem);
+                TodaysItems.Remove(selectedItem);
             }
+
+            SelectedTodaysItems.Clear();
+        }
+
+        [RelayCommand]
+        private async void MoveSelectedItemsToTodaysList()
+        {
+            foreach (var item in SelectedItems) 
+            {
+                var todoItem = item as TodoItem;
+                todoItem.IsPartOfDailyTodoList = true;
+
+                var result = await _itemRepository.UpdateAsync(todoItem.Id, todoItem);
+                if (result == false)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Error!", "Couldn't move todo item to todays list", "OK");
+                }
+            }
+            SelectedItems.Clear();
+
+            await LoadItemsAsync();
         }
 
         public async Task Init()
         {
             await LoadItemsAsync();
-            PopulateItemsCollection(ShowAllTodoItems);
         }
 
         private async Task LoadItemsAsync()
         {
-            _items = await _itemRepository.GetBySpecificationAsync(item => !item.IsCompleted);
-        }
+            var items = await _itemRepository.GetBySpecificationAsync(item => !item.IsCompleted);
 
-        private void PopulateItemsCollection(bool showAllTodoItems)
-        {
-            var items = showAllTodoItems
-                ? _items
-                : _items.Where(item => item.IsPartOfDailyTodoList);
-
-            ItemsCollection.Clear();
-            foreach (var item in items)
+            var itemsInBacklog = items.Where(item => item.IsPartOfDailyTodoList == false);
+            Items.Clear();
+            foreach (var item in itemsInBacklog)
             {
-                ItemsCollection.Add(item);
+                Items.Add(item);
+            }
+
+            var todaysItems = items.Where(item => item.IsPartOfDailyTodoList);
+            TodaysItems.Clear();
+            foreach (var item in todaysItems)
+            {
+                TodaysItems.Add(item);
             }
         }
     }
