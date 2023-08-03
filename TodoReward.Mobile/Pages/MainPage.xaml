@@ -19,7 +19,7 @@
                 HeightRequest="25" 
                 FontSize="Micro" 
                 Padding="2" 
-                HorizontalOptions="End"
+                HorizontalOptions="Start"
                 Command="{Binding ToggleShowAllItemsCommand}">
             <Button.Triggers>
                 <DataTrigger TargetType="Button" Binding="{Binding ShowAllItems}" Value="False">
