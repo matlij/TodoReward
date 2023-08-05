@@ -10,7 +10,7 @@ namespace TodoReward.Core
         private readonly IGenericRepository<User> _userRepository;
         private readonly IGenericRepository<UserReward> _userRewardRepository;
 
-        private const int RewardLimit = 4;
+        private const int RewardLimit = 2;
 
         public TodoItemService(
             IRewardService rewardService,
