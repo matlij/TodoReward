@@ -30,7 +30,7 @@
                 </DataTrigger>
             </Button.Triggers>
         </Button>
-        <Label Text="Todays"/>
+        <Label Text="Todays" FontSize="Large"/>
         <CollectionView x:Name="TodaysItemsCollectionView"
                         ItemsSource="{Binding TodaysItems}"
                         VerticalOptions="FillAndExpand"
@@ -58,7 +58,7 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Label Text="Backlog" IsVisible="{Binding ShowAllItems}"/>
+        <Label Text="Backlog" IsVisible="{Binding ShowAllItems}" FontSize="Large"/>
         <CollectionView x:Name="ItemsCollectionView"
                         ItemsSource="{Binding Items}"
                         VerticalOptions="FillAndExpand"
