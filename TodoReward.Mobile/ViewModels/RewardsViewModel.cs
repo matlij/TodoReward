@@ -58,8 +58,8 @@ namespace TodoReward.ViewModels
             if (result is bool boolResult && boolResult)
             {
                 await UseSelectedReward();
-                SelectedReward = null;
             }
+            SelectedReward = null;
         }
 
         private async Task UseSelectedReward()
