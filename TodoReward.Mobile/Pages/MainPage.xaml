@@ -43,7 +43,7 @@
                             <SwipeItems Mode="Execute">
                                 <SwipeItem Text="Edit"
                                            IconImageSource="edit.svg"
-                                           Command="{Binding Source={RelativeSource AncestorType={x:Type pages:MainPage}}, Path=BindingContext.DeleteItemCommand}"
+                                           Command="{Binding Source={RelativeSource AncestorType={x:Type pages:MainPage}}, Path=BindingContext.EditItemCommand}"
                                            CommandParameter="{Binding .}"/>
                             </SwipeItems>
                         </SwipeView.RightItems>
@@ -72,7 +72,7 @@
                             <SwipeItems Mode="Execute">
                                 <SwipeItem Text="Edit"
                                            IconImageSource="edit.svg"
-                                           Command="{Binding Source={RelativeSource AncestorType={x:Type pages:MainPage}}, Path=BindingContext.DeleteItemCommand}"
+                                           Command="{Binding Source={RelativeSource AncestorType={x:Type pages:MainPage}}, Path=BindingContext.EditItemCommand}"
                                            CommandParameter="{Binding .}"/>
                             </SwipeItems>
                         </SwipeView.RightItems>

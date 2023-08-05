@@ -43,13 +43,16 @@ namespace TodoReward.ViewModels
         }
 
         [RelayCommand]
-        private async Task DeleteItem(TodoItem todoItem)
+        private async Task EditItem(TodoItem todoItem)
         {
             var navigationParameter = new Dictionary<string, object>
             {
                 { "TodoItem", todoItem }
             };
             await Shell.Current.GoToAsync(nameof(PutItemPage), navigationParameter);
+
+            SelectedItems.Clear();
+            SelectedTodaysItems.Clear();
         }
 
         [RelayCommand]
