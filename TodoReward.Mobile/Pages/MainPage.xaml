@@ -8,13 +8,22 @@
              x:DataType="viewmodel:MainViewModel"
              x:Class="TodoReward.Pages.MainPage"
              Title="Todo list">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding ToggleShowAllItemsCommand}">
+            <ToolbarItem.IconImageSource>
+                <FontImageSource FontFamily="MaterialIconsOutlined-Regular"
+                                 Glyph="&#xeb3d;"/>
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
+
     <ContentPage.Resources>
         <ResourceDictionary>
             <toolkit:BoolToObjectConverter x:Key="BoolToObjectConverter" TrueObject="DarkOrange" FalseObject="Blue" />
         </ResourceDictionary>
     </ContentPage.Resources>
     <StackLayout Padding="10,10,10,30" Spacing="10">
-        <Button Text="Show all" 
+        <!--<Button Text="Show all" 
                 WidthRequest="100" 
                 HeightRequest="25" 
                 FontSize="Micro" 
@@ -29,8 +38,7 @@
                     <Setter Property="BackgroundColor" Value="DarkOrange" />
                 </DataTrigger>
             </Button.Triggers>
-        </Button>
-        <Label Text="Todays" FontSize="Large"/>
+        </Button>-->
         <CollectionView x:Name="TodaysItemsCollectionView"
                         ItemsSource="{Binding TodaysItems}"
                         VerticalOptions="FillAndExpand"
