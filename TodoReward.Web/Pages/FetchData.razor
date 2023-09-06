@@ -1,0 +1,42 @@
+﻿@page "/fetchdata"
+@using TodoReward.Core.Interfaces;
+@using TodoReward.Core.Models;
+@inject IGenericRepository<TodoItem> Repository
+
+<PageTitle>Weather forecast</PageTitle>
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (items == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in items)
+            {
+                <tr>
+                    <td>@item.Title</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IEnumerable<TodoItem>? items;
+
+    protected override async Task OnInitializedAsync()
+    {
+        items = await Repository.GetAllAsync();
+    }
+}
