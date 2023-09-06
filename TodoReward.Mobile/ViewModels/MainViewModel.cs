@@ -8,10 +8,28 @@ using TodoReward.Pages;
 
 namespace TodoReward.ViewModels
 {
+    public partial class UserViewModel : ObservableObject
+    {
+        private readonly IGenericRepository<User> _userRepository;
+
+        [ObservableProperty]
+        private User _user;
+
+        public UserViewModel(IGenericRepository<User> userRepository)
+        {
+            _userRepository = userRepository;
+        }
+
+        public async Task Init()
+        {
+            User = await _userRepository.GetByIdAsync(ModelConstants.UserId)
+                ?? throw new InvalidOperationException("Cannot find user with ID: " + ModelConstants.UserId);
+        }
+    }
+
     public partial class MainViewModel : ObservableObject
     {
         private readonly IGenericRepository<TodoItem> _itemRepository;
-        private readonly IGenericRepository<User> _userRepository;
         private readonly ITodoItemService _itemService;
 
         [ObservableProperty]
@@ -29,10 +47,9 @@ namespace TodoReward.ViewModels
         [ObservableProperty]
         private bool _showAllItems;
 
-        public MainViewModel(ITodoItemService todoItemService, IGenericRepository<TodoItem> itemRepository, IGenericRepository<User> userRepository)
+        public MainViewModel(ITodoItemService todoItemService, IGenericRepository<TodoItem> itemRepository)
         {
             _itemRepository = itemRepository;
-            _userRepository = userRepository;
             _itemService = todoItemService;
         }
 
@@ -40,6 +57,12 @@ namespace TodoReward.ViewModels
         private void ToggleShowAllItems()
         {
             ShowAllItems = !ShowAllItems;
+        }
+
+        [RelayCommand]
+        private async void OpenUserPage()
+        {
+            await Shell.Current.GoToAsync(nameof(UserPage));
         }
 
         [RelayCommand]
@@ -68,17 +91,24 @@ namespace TodoReward.ViewModels
 
             foreach (var selectedItem in selectedItemsCopy)
             {
-                var result = await _itemService.CompleteItemAsync(selectedItem);
-                if (result.result == false)
+                try
                 {
-                    await Application.Current.MainPage.DisplayAlert("Error!", "Couldn't complete todo item", "OK");
-                }
-                if (result.result && result.reward is not null)
-                {
-                    await Application.Current.MainPage.DisplaySnackbar($"Nice job! You have received a reward: {result.reward.Title}", duration: TimeSpan.FromSeconds(3));
-                }
+                    var result = await _itemService.CompleteItemAsync(selectedItem);
+                    if (result.MilestoneReached)
+                    {
+                        await Application.Current.MainPage.DisplaySnackbar($"Milestone reached! Rewards received: {result.RewardsFromCompletedMilestone.Count()}", duration: TimeSpan.FromSeconds(5));
+                    }
+                    else if (result.RewardReceived)
+                    {
+                        await Application.Current.MainPage.DisplaySnackbar($"Nice job! You have received a reward: {result.Reward.Title}", duration: TimeSpan.FromSeconds(3));
+                    }
 
-                TodaysItems.Remove(selectedItem);
+                    TodaysItems.Remove(selectedItem);
+                }
+                catch (Exception e)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Error!", $"Couldn't complete todo item: {e.Message}", "OK");
+                }
             }
 
             SelectedTodaysItems.Clear();
@@ -87,7 +117,7 @@ namespace TodoReward.ViewModels
         [RelayCommand]
         private async void MoveSelectedItemsToTodaysList()
         {
-            foreach (var item in SelectedItems) 
+            foreach (var item in SelectedItems)
             {
                 var todoItem = item as TodoItem;
                 todoItem.IsPartOfDailyTodoList = true;

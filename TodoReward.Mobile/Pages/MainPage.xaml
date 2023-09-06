@@ -9,12 +9,18 @@
              x:Class="TodoReward.Pages.MainPage"
              Title="Todo list">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Command="{Binding ToggleShowAllItemsCommand}">
+        <ToolbarItem Command="{Binding OpenUserPageCommand}">
             <ToolbarItem.IconImageSource>
                 <FontImageSource FontFamily="MaterialIconsOutlined-Regular"
-                                 Glyph="&#xeb3d;"/>
+                                 Glyph="&#xe7fd;"/>
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
+            <ToolbarItem Command="{Binding ToggleShowAllItemsCommand}">
+                <ToolbarItem.IconImageSource>
+                    <FontImageSource FontFamily="MaterialIconsOutlined-Regular"
+                                 Glyph="&#xeb3d;"/>
+                </ToolbarItem.IconImageSource>
+            </ToolbarItem>
     </ContentPage.ToolbarItems>
 
     <ContentPage.Resources>

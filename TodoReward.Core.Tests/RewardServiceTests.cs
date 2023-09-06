@@ -1,59 +1,111 @@
-namespace TodoReward.Core.Tests;
+using TodoReward.Core;
 
-[TestClass]
-public class RewardServiceTests
+namespace TodoReward.Tests
 {
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    private Mock<IGenericRepository<Reward>> _repositoryMock;
-    private RewardService _rewardService;
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-
-    // Test initializer
-    [TestInitialize]
-    public void Setup()
+    [TestClass]
+    public class RewardServiceTests
     {
-        // Create a new repository mock and reward service instance before each test
-        _repositoryMock = new Mock<IGenericRepository<Reward>>();
-        _rewardService = new RewardService(_repositoryMock.Object);
-    }
+        private RewardService _rewardService;
+        private Mock<IGenericRepository<Reward>> _rewardRepositoryMock;
 
-    // Test case 2: Test when the repository returns an empty rewards array
-    [TestMethod]
-    public async Task GenerateRandomAsync_WhenRepositoryReturnsEmptyArray_ReturnsUnknownReward()
-    {
-        // Arrange
-        _repositoryMock.Setup(repo => repo.GetAllAsync()).ReturnsAsync(new Reward[0]);
-
-        // Act
-        var result = await _rewardService.GenerateRandomAsync();
-
-        // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual("Unknown", result.Title);
-    }
-
-    // Test case 3: Test when the repository returns some rewards
-    [TestMethod]
-    public async Task GenerateRandomAsync_WhenRepositoryReturnsRewards_ReturnsRandomReward()
-    {
-        // Arrange
-        var rewards = new[]
+        [TestInitialize]
+        public void SetUp()
         {
-            new Reward { Id = Guid.NewGuid(), Title = "Reward1", Propability = 1 },
-            new Reward { Id = Guid.NewGuid(), Title = "Reward2", Propability = 100 },
-            new Reward { Id = Guid.NewGuid(), Title = "Reward3", Propability = 1000 }
-        };
+            _rewardRepositoryMock = new Mock<IGenericRepository<Reward>>();
+            _rewardService = new RewardService(_rewardRepositoryMock.Object);
+        }
 
-        _repositoryMock.Setup(repo => repo.GetAllAsync()).ReturnsAsync(rewards);
+        [TestMethod]
+        public async Task GetRewardAsync_UserHasEnoughPoints_ReturnsRandomReward()
+        {
+            // Arrange
+            var user = new User { TotalPoints = 5 };
+            var rewards = new List<Reward>
+            {
+                new Reward { Id = Guid.NewGuid(), Title = "Reward 1", Propability = 1 },
+                new Reward { Id = Guid.NewGuid(), Title = "Reward 2", Propability = 1 }
+            };
+            _rewardRepositoryMock.Setup(r => r.GetAllAsync()).ReturnsAsync(rewards);
 
-        // Act
-        var result = await _rewardService.GenerateRandomAsync();
+            // Act
+            var result = await _rewardService.GetRewardAsync(user);
 
-        // Assert
-        Assert.IsNotNull(result);
-        Assert.IsTrue(result.Id != Guid.Empty);
-        Assert.IsFalse(string.IsNullOrEmpty(result.Title));
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsTrue(rewards.Any(r => r.Id == result?.Id));
+        }
+
+        [TestMethod]
+        public async Task GetRewardAsync_UserDoesNotHaveEnoughPoints_ReturnsNull()
+        {
+            // Arrange
+            var user = new User { TotalPoints = 1 };
+            var rewards = new List<Reward>
+            {
+                new Reward { Id = Guid.NewGuid(), Title = "Reward 1", Propability = 1 },
+                new Reward { Id = Guid.NewGuid(), Title = "Reward 2", Propability = 1 }
+            };
+            _rewardRepositoryMock.Setup(r => r.GetAllAsync()).ReturnsAsync(rewards);
+
+            // Act
+            var result = await _rewardService.GetRewardAsync(user);
+
+            // Assert
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public async Task HasReachedNextMilestone_UserHasReachedNextMilestone_ReturnsRewards()
+        {
+            // Arrange
+            var user = new User { MilstonesReached = 1, TotalPointsRewarded = 10 };
+            var rewards = new List<Reward>
+            {
+                new Reward { Id = Guid.NewGuid(), Title = "Reward 1", Propability = 1 },
+                new Reward { Id = Guid.NewGuid(), Title = "Reward 2", Propability = 1 }
+            };
+            _rewardRepositoryMock.Setup(r => r.GetAllAsync()).ReturnsAsync(rewards);
+
+            // Act
+            var milestoneRewards = await _rewardService.GetRewardsForMilestone(user);
+
+            // Assert
+            Assert.AreEqual(4, milestoneRewards?.Count()); // 1 Milestone reached * 2 rewards per milestone + 2 additional rewards
+        }
+
+        [TestMethod]
+        public async Task HasReachedNextMilestone_UserHasNotReachedNextMilestone_ReturnsNoRewards()
+        {
+            // Arrange
+            var user = new User { MilstonesReached = 1, TotalPointsRewarded = 8 };
+            var rewards = new List<Reward>
+            {
+                new Reward { Id = Guid.NewGuid(), Title = "Reward 1", Propability = 1 },
+                new Reward { Id = Guid.NewGuid(), Title = "Reward 2", Propability = 1 }
+            };
+            _rewardRepositoryMock.Setup(r => r.GetAllAsync()).ReturnsAsync(rewards);
+
+            // Act
+            var milestoneRewards = await _rewardService.GetRewardsForMilestone(user);
+
+            // Assert
+            Assert.AreEqual(null, milestoneRewards?.Count());
+        }
+
+        [TestMethod]
+        public async Task HasReachedNextMilestone_UserUpdateFails_ThrowsInvalidOperationException()
+        {
+            // Arrange
+            var user = new User { MilstonesReached = 1, TotalPointsRewarded = 10 };
+            var rewards = new List<Reward>
+            {
+                new Reward { Id = Guid.NewGuid(), Title = "Reward 1", Propability = 1 },
+                new Reward { Id = Guid.NewGuid(), Title = "Reward 2", Propability = 1 }
+            };
+            _rewardRepositoryMock.Setup(r => r.GetAllAsync()).ReturnsAsync(rewards);
+
+            // Act + Assert
+            await Assert.ThrowsExceptionAsync<InvalidOperationException>(() => _rewardService.GetRewardsForMilestone(user));
+        }
     }
-
-    // Add more test cases to cover other scenarios if needed.
 }

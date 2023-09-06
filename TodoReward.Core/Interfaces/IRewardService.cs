@@ -4,6 +4,7 @@ namespace TodoReward.Core.Interfaces
 {
     public interface IRewardService
     {
-        Task<Reward> GenerateRandomAsync();
+        Task<Reward?> GetRewardAsync(User user);
+        Task<IEnumerable<Reward>?> GetRewardsForMilestone(User user);
     }
 }
