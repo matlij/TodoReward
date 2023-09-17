@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TodoReward.Core.Models;
+using TodoReward.Core.Models.Constants;
 
 namespace TodoReward.Infrastructure;
 

@@ -6,10 +6,12 @@ namespace TodoReward.Core.Interfaces
     public interface IGenericRepository<T> where T : BaseEntity
     {
         Task<bool> AddAsync(T item);
-        Task<bool> DeleteAsync(Guid id);
+        Task<bool> DeleteAsync(string id);
         Task<IEnumerable<T>> GetAllAsync();
-        Task<T?> GetByIdAsync(Guid id);
+        Task<T?> GetByIdAsync(string id);
         Task<IEnumerable<T>> GetBySpecificationAsync(Expression<Func<T, bool>> predicate);
-        Task<bool> UpdateAsync(Guid id, T item);
+        Task<IEnumerable<T>> GetBySpecificationAsync(string filter);
+        Task<bool> UpdateAsync(string id, T item);
+        Task<bool> UpdateRangeAsync(IEnumerable<T> items);
     }
 }

@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using TodoReward.Core.Interfaces;
 using TodoReward.Core.Models;
+using TodoReward.Core.Models.Constants;
 using TodoReward.Pages;
 
 namespace TodoReward.ViewModels
@@ -31,6 +32,7 @@ namespace TodoReward.ViewModels
     {
         private readonly IGenericRepository<TodoItem> _itemRepository;
         private readonly ITodoItemService _itemService;
+        private readonly IRewardService _rewardService;
 
         [ObservableProperty]
         private ObservableCollection<TodoItem> _todaysItems = new();
@@ -47,10 +49,11 @@ namespace TodoReward.ViewModels
         [ObservableProperty]
         private bool _showAllItems;
 
-        public MainViewModel(ITodoItemService todoItemService, IGenericRepository<TodoItem> itemRepository)
+        public MainViewModel(ITodoItemService todoItemService, IRewardService rewardService, IGenericRepository<TodoItem> itemRepository)
         {
             _itemRepository = itemRepository;
             _itemService = todoItemService;
+            _rewardService = rewardService;
         }
 
         [RelayCommand]
@@ -93,7 +96,13 @@ namespace TodoReward.ViewModels
             {
                 try
                 {
-                    var result = await _itemService.CompleteItemAsync(selectedItem);
+                    var todoItemResult = await _itemService.CompleteItemAsync(selectedItem);
+                    if (!todoItemResult)
+                    {
+                        throw new InvalidOperationException("Failed to update Todoitem");
+                    }
+
+                    var result = await _rewardService.GetRewardAsync(selectedItem);
                     if (result.MilestoneReached)
                     {
                         await Application.Current.MainPage.DisplaySnackbar($"Milestone reached! Rewards received: {result.RewardsFromCompletedMilestone.Count()}", duration: TimeSpan.FromSeconds(5));

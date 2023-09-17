@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Timers;
 using TodoReward.Core.Interfaces;
 using TodoReward.Core.Models;
+using TodoReward.Core.Models.Constants;
 using TodoReward.Pages;
 using Timer = System.Timers.Timer;
 
@@ -111,7 +112,7 @@ namespace TodoReward.ViewModels
             return true;
         }
 
-        private bool RemoveFromList(IList<UserReward> rewards, Guid idToRemove)
+        private bool RemoveFromList(IList<UserReward> rewards, string idToRemove)
         {
             var rewardToRemove = rewards.SingleOrDefault(r => r.Id == idToRemove);
             if (rewardToRemove is null)

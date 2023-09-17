@@ -4,6 +4,9 @@ using System.Net.Http.Headers;
 using TodoReward.Core.Interfaces;
 using TodoReward.Core.Models;
 using TodoReward.Infrastructure.Mapper;
+using TodoReward.Infrastructure.Models.ExternalModels;
+using TodoReward.Infrastructure.Models.StorageTable;
+using TodoReward.Infrastructure.Options;
 using TodoReward.Infrastructure.Repositories;
 
 namespace TodoReward.Web
@@ -25,7 +28,14 @@ namespace TodoReward.Web
             });
 
             builder.Services.AddAutoMapper(typeof(GeneralProfile));
-            builder.Services.AddTransient<IGenericRepository<TodoItem>, ExternalTodoRepository<TodoItem>>();
+            builder.Services.AddTransient<IGenericRepository<TodoItem>, WebApiGenericRepository<TodoItem, ExternalTodoItemList>>();
+            builder.Services.AddTransient<IGenericRepository<User>, TableStorageRepository<User, UserEntity>>();
+
+            builder.Services.Configure<StorageTableOptions>(o =>
+            {
+                o.ConnectionString = builder.Configuration.GetConnectionString("StorageAccount") ?? throw new KeyNotFoundException("Failed to find connectionstring with key StorageTable");
+                o.TableName = "Users";
+            });
 
             await builder.Build().RunAsync();
         }

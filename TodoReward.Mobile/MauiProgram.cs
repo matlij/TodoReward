@@ -6,6 +6,7 @@ using TodoReward.Core;
 using TodoReward.Core.Interfaces;
 using TodoReward.Core.Models;
 using TodoReward.Infrastructure;
+using TodoReward.Infrastructure.Options;
 using TodoReward.Infrastructure.Repositories;
 using TodoReward.Pages;
 using TodoReward.ViewModels;
@@ -53,7 +54,6 @@ public static class MauiProgram
         builder.Services.AddTransient<IGenericRepository<Reward>, LocalDbRepository<Reward>>();
 
         builder.Services.AddTransient<ITodoItemService, TodoItemService>();
-        builder.Services.AddTransient<IRewardService, RewardService>();
 
         return builder.Build();
 	}

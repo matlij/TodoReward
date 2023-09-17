@@ -1,4 +1,4 @@
-﻿namespace TodoReward.Infrastructure;
+﻿namespace TodoReward.Infrastructure.Options;
 
 public class DatabaseOptions
 {

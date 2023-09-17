@@ -22,7 +22,7 @@ public class LocalDbRepository<T> : IGenericRepository<T> where T : BaseEntity, 
         return await ctx.Set<T>().ToListAsync();
     }
 
-    public async Task<T?> GetByIdAsync(Guid id)
+    public async Task<T?> GetByIdAsync(string id)
     {
         using var ctx = new MyDbContext(_optionsBuilder.Options);
 
@@ -49,7 +49,7 @@ public class LocalDbRepository<T> : IGenericRepository<T> where T : BaseEntity, 
         return await ctx.SaveChangesAsync() > 0;
     }
 
-    public async Task<bool> DeleteAsync(Guid id)
+    public async Task<bool> DeleteAsync(string id)
     {
         using var ctx = new MyDbContext(_optionsBuilder.Options);
 
@@ -62,7 +62,7 @@ public class LocalDbRepository<T> : IGenericRepository<T> where T : BaseEntity, 
         return await ctx.SaveChangesAsync() > 0;
     }
 
-    public async Task<bool> UpdateAsync(Guid id, T item)
+    public async Task<bool> UpdateAsync(string id, T item)
     {
         if (item is null)
         {
@@ -75,4 +75,15 @@ public class LocalDbRepository<T> : IGenericRepository<T> where T : BaseEntity, 
 
         return await ctx.SaveChangesAsync() > 0;
     }
+
+    public Task<bool> UpdateRangeAsync(IEnumerable<T> items)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IEnumerable<T>> GetBySpecificationAsync(string filter)
+    {
+        throw new NotImplementedException();
+    }
+
 }

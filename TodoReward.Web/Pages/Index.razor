@@ -1,4 +1,9 @@
 ﻿@page "/"
+@using TodoReward.Core.Interfaces;
+@using TodoReward.Core.Models;
+@using TodoReward.Core.Models.Constants;
+@inject IGenericRepository<User> UserRepository
+
 
 <PageTitle>Index</PageTitle>
 
@@ -7,3 +12,14 @@
 Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+@code {
+    private User? user;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        user = await UserRepository.GetByIdAsync(ModelConstants.UserId);
+
+    }
+}

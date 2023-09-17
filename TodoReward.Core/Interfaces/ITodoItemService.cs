@@ -4,6 +4,6 @@ namespace TodoReward.Core.Interfaces
 {
     public interface ITodoItemService
     {
-        Task<TodoItemCompleteResult> CompleteItemAsync(TodoItem item);
+        Task<bool> CompleteItemAsync(TodoItem item);
     }
 }

@@ -11,7 +11,7 @@ namespace TodoReward.ViewModels
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(DeleteItemCommand))]
-        private Guid? _todoId;
+        private string? _todoId;
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(AddOrUpdateItemCommand))]
@@ -58,13 +58,13 @@ namespace TodoReward.ViewModels
 
             var item = new TodoItem
             {
-                Id = GuidIsNullOrEmpty(TodoId) ? Guid.NewGuid() : (Guid)TodoId,
+                Id = string.IsNullOrEmpty(TodoId) ? Guid.NewGuid().ToString() : TodoId?.ToString(),
                 Points = scoreInt,
                 Title = InputTitle,
                 IsPartOfDailyTodoList = IsPartOfDailyList
             };
 
-            var result = GuidIsNullOrEmpty(TodoId)
+            var result = string.IsNullOrEmpty(TodoId)
                 ? await _repository.AddAsync(item)
                 : await _repository.UpdateAsync(item.Id, item);
 
@@ -90,7 +90,7 @@ namespace TodoReward.ViewModels
                 return;
             }
 
-            var result = await _repository.DeleteAsync((Guid)TodoId);
+            var result = await _repository.DeleteAsync(TodoId);
 
             if (!result)
             {
@@ -110,9 +110,8 @@ namespace TodoReward.ViewModels
 
         private bool CanDeleteItem()
         {
-            return GuidIsNullOrEmpty(TodoId) == false;
+            return string.IsNullOrEmpty(TodoId) == false;
         }
 
-        private static bool GuidIsNullOrEmpty(Guid? guid) => guid is null || guid == Guid.Empty;
     }
 }

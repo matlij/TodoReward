@@ -4,12 +4,12 @@
     {
         public BaseEntity(Guid id)
         {
-            Id = id;
+            Id = id.ToString();
         }
         public BaseEntity()
         {
-            Id = Guid.NewGuid();
+            Id = Guid.NewGuid().ToString();
         }
-        public Guid Id { get; set; }
+        public string Id { get; set; }
     }
 }

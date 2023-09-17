@@ -25,7 +25,7 @@ namespace TodoReward.Infrastructure.Repositories
             return Task.FromResult(_items.AsEnumerable());
         }
 
-        public Task<T?> GetByIdAsync(Guid id)
+        public Task<T?> GetByIdAsync(string id)
         {
             return Task.FromResult(_items.SingleOrDefault(x => x.Id == id));
         }
@@ -41,7 +41,7 @@ namespace TodoReward.Infrastructure.Repositories
             return Task.FromResult(true);
         }
 
-        public Task<bool> UpdateAsync(Guid id, T item)
+        public Task<bool> UpdateAsync(string id, T item)
         {
             if (item is null)
             {
@@ -59,7 +59,17 @@ namespace TodoReward.Infrastructure.Repositories
             return Task.FromResult(true);
         }
 
-        public Task<bool> DeleteAsync(Guid id)
+        public Task<bool> DeleteAsync(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateRangeAsync(IEnumerable<T> items)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<T>> GetBySpecificationAsync(string filter)
         {
             throw new NotImplementedException();
         }
@@ -72,47 +82,5 @@ namespace TodoReward.Infrastructure.Repositories
                 RuleForType(typeof(int), f => rnd.Next(1, 4));
             }
         }
-    }
-
-    public class ExternalTodoItemList
-    {
-        public List<ExternalTodoItem> Items { get; set; }
-        public Dictionary<string, ExternalProject> Projects { get; set; }
-        public Dictionary<string, SectionDto> Sections { get; set; }
-    }
-
-    public class ExternalTodoItem
-    {
-        public DateTime CompletedAt { get; set; }
-        public string Content { get; set; }
-        public string Id { get; set; }
-        public object MetaData { get; set; }
-        public int NoteCount { get; set; }
-        public List<object> Notes { get; set; }
-        public string ProjectId { get; set; }
-        public string SectionId { get; set; }
-        public string TaskId { get; set; }
-        public string UserId { get; set; }
-    }
-
-    public class ExternalProject
-    {
-        public int ChildOrder { get; set; }
-        public bool Collapsed { get; set; }
-        public string Color { get; set; }
-        public string Id { get; set; }
-        public bool IsArchived { get; set; }
-        public bool IsDeleted { get; set; }
-        public bool IsFavorite { get; set; }
-        public string Name { get; set; }
-        public object ParentId { get; set; }
-        public bool Shared { get; set; }
-        public object SyncId { get; set; }
-        public string ViewStyle { get; set; }
-    }
-
-    public class SectionDto
-    {
-        // Define properties for the 'Section' class here, if needed.
     }
 }

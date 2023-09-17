@@ -3,9 +3,9 @@
     public class UserReward : BaseEntity
     {
         public Reward Reward { get; set; } = null;
-        public Guid RewardId { get; set; }
+        public string RewardId { get; set; }
         public User User { get; set; } = null;
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
 
         public bool IsDone { get; set; }
     }
