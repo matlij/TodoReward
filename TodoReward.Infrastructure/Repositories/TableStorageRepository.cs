@@ -18,10 +18,11 @@ public class TableStorageRepository<T, TEntity> : IGenericRepository<T>
     private readonly TableClient _tableClient;
     private readonly IMapper _mapper;
 
-    public TableStorageRepository(IOptions<StorageTableOptions> options, IMapper mapper)
+    public TableStorageRepository(IOptions<StorageTableOptions<TEntity>> options, IMapper mapper)
     {
         _tableServiceClient = new TableServiceClient(options.Value.ConnectionString);
         _tableClient = _tableServiceClient.GetTableClient(options.Value.TableName);
+        _tableClient.CreateIfNotExists();
         _mapper = mapper;
     }
 
@@ -82,8 +83,8 @@ public class TableStorageRepository<T, TEntity> : IGenericRepository<T>
     {
         try
         {
-            var entity = await _tableClient.GetEntityAsync<TEntity>(StorageTableConstants.StorageTablePartitionKey, id.ToString());
-            return _mapper.Map<T>(entity);
+            var response = await _tableClient.GetEntityAsync<TEntity>(StorageTableConstants.StorageTablePartitionKey, id.ToString());
+            return _mapper.Map<T>(response.Value);
         }
         catch (RequestFailedException ex)
         {
@@ -123,13 +124,16 @@ public class TableStorageRepository<T, TEntity> : IGenericRepository<T>
     {
         try
         {
+            if (!items.Any())
+            {
+                return true;
+            }
+
             var transactions = items.Select(
                 i => new TableTransactionAction(TableTransactionActionType.UpsertMerge, _mapper.Map<TEntity>(i)));
 
             var response = await _tableClient.SubmitTransactionAsync(transactions);
-            return response.Value.Any(r => r.IsError)
-                ? false
-                : true;
+            return !response.Value.Any(r => r.IsError);
         }
         catch (RequestFailedException ex)
         {

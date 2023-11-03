@@ -5,16 +5,22 @@ namespace TodoReward.Infrastructure.Models.StorageTable;
 
 public class UserEntity : ITableEntity
 {
-    public UserEntity(Guid id)
-    {
-        PartitionKey = "Users";
-        RowKey = id.ToString();
-    }
+    public int TotalPoints { get; set; }
 
-    public string PartitionKey { get; set; }
+    public string PartitionKey { get; set; } = StorageTableConstants.StorageTablePartitionKey;
     public string RowKey { get; set; }
     public DateTimeOffset? Timestamp { get; set; }
     public ETag ETag { get; set; }
-    public int TotalPoints { get; set; }
+}
+public class UserRewardEntity : ITableEntity
+{
+    public string RewardId { get; set; }
+    public string UserId { get; set; }
+    public bool IsDone { get; set; }
+
+    public string PartitionKey { get; set; } = StorageTableConstants.StorageTablePartitionKey;
+    public string RowKey { get; set; }
+    public DateTimeOffset? Timestamp { get; set; }
+    public ETag ETag { get; set; }
 }
 

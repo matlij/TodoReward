@@ -4,6 +4,7 @@ namespace TodoReward.Core.Interfaces
 {
     public interface IRewardService
     {
-        Task<TodoItemCompleteResult?> GetRewardAsync(TodoItem item);
+        Task<TodoItemCompleteResult?> RegisterRewardOnUserAsync(TodoItem item, string userId);
+        Task<IEnumerable<TodoItemCompleteResult>?> RegisterRewardsOnUserAsync(IEnumerable<TodoItem> items, string userId);
     }
 }

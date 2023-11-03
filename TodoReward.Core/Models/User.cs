@@ -25,9 +25,12 @@
         {
             get
             {
-                return (TotalPoints - TotalPointsRewarded) - RewardLimit;
+                var unrewardedPoints = TotalPoints - TotalPointsRewarded;
+                return RewardLimit - unrewardedPoints;
             }
         }
+
+        public TodoItem? LastCompletedItem { get; set; }
 
         public int MilstonesReached { get; set; }
         public int NoOfRewardsInCurrentMilstone
@@ -63,28 +66,35 @@
                 return TotalPoints >= NextMileStone;
             }
         }
+
+        private bool ShoudlGetReward
+        {
+            get
+            {
+                return PointsToNextReward <= 0;
+            }
+        }
+
         private static int PointsToNextMilestone(int milestone) => (milestone * milestone * 5) + 5;
 
         public Reward? RegisterCompletedTodo(TodoItem todoItem, IEnumerable<Reward> rewards)
         {
-            var reward = GetReward(todoItem, rewards);
-
             TotalPoints += todoItem.Points;
+
+            var reward = GetReward(todoItem, rewards);
 
             return reward;
         }
 
         private Reward? GetReward(TodoItem todoItem, IEnumerable<Reward> rewards)
         {
-            var shouldGetReward = PointsToNextReward <= todoItem.Points;
-
-            if (shouldGetReward)
+            if (!ShoudlGetReward)
             {
-                TotalPointsRewarded += todoItem.Points;
-                return GenerateRandomReward(rewards);
+                return null;
             }
 
-            return null;
+            TotalPointsRewarded += todoItem.Points;
+            return GenerateRandomReward(rewards);
         }
 
         public IEnumerable<Reward>? GetRewardsForMilestone(IEnumerable<Reward> rewards)

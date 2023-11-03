@@ -1,10 +1,6 @@
 ﻿using AutoBogus;
-using AutoMapper;
 using Bogus;
 using System.Linq.Expressions;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text.Json;
 using TodoReward.Core.Interfaces;
 using TodoReward.Core.Models;
 
@@ -13,6 +9,11 @@ namespace TodoReward.Infrastructure.Repositories
     public class InMemoryRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         private readonly IList<T> _items;
+
+        public InMemoryRepository(IList<T> items)
+        {
+            _items = items;
+        }
 
         public InMemoryRepository()
         {

@@ -24,7 +24,10 @@ namespace TodoReward.Core
 
         public async Task<bool> CompleteItemAsync(TodoItem item)
         {
-            item.IsCompleted = true;
+            if (item.CompletedDate == default)
+            {
+                item.CompletedDate = DateTime.UtcNow;
+            }
             return await _todoRepository.UpdateAsync(item.Id, item);
         }
     }

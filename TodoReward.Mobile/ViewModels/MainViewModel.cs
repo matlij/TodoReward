@@ -102,7 +102,7 @@ namespace TodoReward.ViewModels
                         throw new InvalidOperationException("Failed to update Todoitem");
                     }
 
-                    var result = await _rewardService.GetRewardAsync(selectedItem);
+                    var result = await _rewardService.RegisterRewardOnUserAsync(selectedItem);
                     if (result.MilestoneReached)
                     {
                         await Application.Current.MainPage.DisplaySnackbar($"Milestone reached! Rewards received: {result.RewardsFromCompletedMilestone.Count()}", duration: TimeSpan.FromSeconds(5));

@@ -1,8 +1,10 @@
-﻿namespace TodoReward.Infrastructure.Options;
+﻿using Azure.Data.Tables;
 
-public class StorageTableOptions
+namespace TodoReward.Infrastructure.Options;
+
+public class StorageTableOptions<T> where T : ITableEntity
 {
-    public string ConnectionString { get; set; }
-    public string TableName { get; set; }
+    public string ConnectionString { get; set; } = string.Empty;
+    public string TableName { get; set; } = string.Empty;
 }
 
