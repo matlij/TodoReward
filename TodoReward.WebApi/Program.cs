@@ -51,15 +51,27 @@ var hostBuilder = new HostBuilder()
 
 IList<Reward> GetRewards()
 {
-    return new List<Reward>()
-    {
-        new Reward()
+    return new Reward[]
         {
-            Id = "35a87756-66ba-42a3-bfa6-57e79e21dd93",
-            Title = "Beer",
-            Propability = 10
-        }
-    };
+            new Reward { Title = "Go on a Weekend trip", Propability = 10 },
+            new Reward { Title = "One episode on TV", Propability = 1000 },
+            new Reward { Title = "One movie on TV", Propability = 1000 },
+            new Reward { Title = "30 min gaming", Propability = 100 },
+            new Reward { Title = "One podcast episode", Propability = 1000 },
+            new Reward { Title = "15 min book reading", Propability = 500 },
+            new Reward { Title = "Beer", Propability = 1000 },
+            new Reward { Title = "Glas of Wine", Propability = 200 },
+            new Reward { Title = "Candy", Propability = 500 },
+            new Reward { Title = "Soda", Propability = 500 },
+            new Reward { Title = "Coffea", Propability = 1000 },
+            new Reward { Title = "Yerba mate", Propability = 500 },
+            new Reward { Title = "Tea", Description = "Enjoy a cup of tea", Propability = 1000 },
+            new Reward { Title = "Outside lunch", Propability = 100 },
+            new Reward { Title = "Dessert after dinner", Propability = 100 },
+            new Reward { Title = "Home made Pizza", Propability = 200 },
+            new Reward { Title = "Cinema", Propability = 100 },
+            new Reward { Title = "After dinner snack", Propability = 500 },
+        };
 }
 
 hostBuilder.Build().Run();
