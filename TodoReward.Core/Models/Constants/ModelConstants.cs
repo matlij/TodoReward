@@ -2,6 +2,11 @@
 {
     public class ModelConstants
     {
-        public static string UserId { get; } = Guid.Parse("03de3c78-5bda-4429-8147-7096c3d2f91b").ToString();
+        public static string USER_ID { get; } = Guid.Parse("03de3c78-5bda-4429-8147-7096c3d2f91b").ToString();
+    }
+
+    public class ExternalTodoConstants
+    {
+        public static string REWARDS_PROJECT_ID { get; } = "2322821085";
     }
 }

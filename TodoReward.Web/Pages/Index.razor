@@ -19,7 +19,7 @@ Welcome to your new app.
     protected override async Task OnInitializedAsync()
     {
 
-        user = await UserRepository.GetByIdAsync(ModelConstants.UserId);
+        user = await UserRepository.GetByIdAsync(ModelConstants.USER_ID);
 
     }
 }

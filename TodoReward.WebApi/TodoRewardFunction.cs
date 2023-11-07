@@ -45,14 +45,15 @@ public class TodoRewardFunction
             return req.CreateResponse(HttpStatusCode.BadRequest);
         }
 
-        if (!requestBody.event_name.Equals("item:completed", StringComparison.OrdinalIgnoreCase))
+        if (!requestBody.event_name.Equals("item:completed", StringComparison.OrdinalIgnoreCase) ||
+            requestBody.event_data.project_id == ExternalTodoConstants.REWARDS_PROJECT_ID)
         {
             return req.CreateResponse(HttpStatusCode.OK);
         }
 
         var todoItem = _mapper.Map<TodoItem>(requestBody.event_data);
 
-        await _rewardService.RegisterRewardOnUserAsync(todoItem, ModelConstants.UserId);
+        await _rewardService.RegisterRewardOnUserAsync(todoItem, ModelConstants.USER_ID);
 
         return req.CreateResponse(HttpStatusCode.OK);
     }
@@ -62,17 +63,17 @@ public class TodoRewardFunction
     {
         _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-        var user = await _userRepository.GetByIdAsync(ModelConstants.UserId);
+        var user = await _userRepository.GetByIdAsync(ModelConstants.USER_ID);
         if (user == null)
         {
-            _logger.LogError("Couldn't find user with ID: " + ModelConstants.UserId);
+            _logger.LogError("Couldn't find user with ID: " + ModelConstants.USER_ID);
             return req.CreateResponse(HttpStatusCode.InternalServerError);
         }
 
         var getLastCompletedItem = user?.LastCompletedItem?.CompletedDate ?? DateTime.MinValue;
         var result = await _itemRepository.GetBySpecificationAsync($"since={getLastCompletedItem}");
 
-        await _rewardService.RegisterRewardsOnUserAsync(result, ModelConstants.UserId);
+        await _rewardService.RegisterRewardsOnUserAsync(result, ModelConstants.USER_ID);
 
         var response = req.CreateResponse(HttpStatusCode.OK);
         await response.WriteAsJsonAsync(result);

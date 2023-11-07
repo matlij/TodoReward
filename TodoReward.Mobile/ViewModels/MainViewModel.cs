@@ -23,8 +23,8 @@ namespace TodoReward.ViewModels
 
         public async Task Init()
         {
-            User = await _userRepository.GetByIdAsync(ModelConstants.UserId)
-                ?? throw new InvalidOperationException("Cannot find user with ID: " + ModelConstants.UserId);
+            User = await _userRepository.GetByIdAsync(ModelConstants.USER_ID)
+                ?? throw new InvalidOperationException("Cannot find user with ID: " + ModelConstants.USER_ID);
         }
     }
 
@@ -102,7 +102,7 @@ namespace TodoReward.ViewModels
                         throw new InvalidOperationException("Failed to update Todoitem");
                     }
 
-                    var result = await _rewardService.RegisterRewardOnUserAsync(selectedItem);
+                    var result = await _rewardService.RegisterRewardOnUserAsync(selectedItem, ModelConstants.USER_ID);
                     if (result.MilestoneReached)
                     {
                         await Application.Current.MainPage.DisplaySnackbar($"Milestone reached! Rewards received: {result.RewardsFromCompletedMilestone.Count()}", duration: TimeSpan.FromSeconds(5));

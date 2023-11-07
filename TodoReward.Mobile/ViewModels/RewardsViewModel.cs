@@ -40,7 +40,7 @@ namespace TodoReward.ViewModels
         public async Task Init()
         {
             var rewards = await _userRewardRepository.GetBySpecificationAsync(
-                r => r.UserId == ModelConstants.UserId && r.IsDone == false);
+                r => r.UserId == ModelConstants.USER_ID && r.IsDone == false);
 
             Rewards.Clear();
             foreach (var item in rewards)

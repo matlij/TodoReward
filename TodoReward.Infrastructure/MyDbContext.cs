@@ -45,7 +45,7 @@ public class MyDbContext : DbContext
 
         var user = new User()
         {
-            Id = ModelConstants.UserId
+            Id = ModelConstants.USER_ID
         };
         modelBuilder.Entity<User>().HasData(user);
 

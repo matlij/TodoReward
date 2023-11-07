@@ -31,7 +31,7 @@ namespace TodoReward.Web
             builder.Services.AddTransient<IGenericRepository<TodoItem>, WebApiGenericRepository<TodoItem, ExternalTodoItemList>>();
             builder.Services.AddTransient<IGenericRepository<User>, TableStorageRepository<User, UserEntity>>();
 
-            builder.Services.Configure<StorageTableOptions>(o =>
+            builder.Services.Configure<StorageTableOptions<UserEntity>>(o =>
             {
                 o.ConnectionString = builder.Configuration.GetConnectionString("StorageAccount") ?? throw new KeyNotFoundException("Failed to find connectionstring with key StorageTable");
                 o.TableName = "Users";
