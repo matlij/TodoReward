@@ -2,6 +2,37 @@
 
 namespace TodoReward.Infrastructure.Models.ExternalModels
 {
+    public class DueDto
+    {
+        public string date { get; set; }
+        public bool is_recurring { get; set; }
+        public DateTime datetime { get; set; }
+        public string @string { get; set; }
+        public string timezone { get; set; }
+    }
+
+    public class CreateTaskDto
+    {
+        public string creator_id { get; set; }
+        public DateTime created_at { get; set; }
+        public object assignee_id { get; set; }
+        public object assigner_id { get; set; }
+        public int comment_count { get; set; }
+        public bool is_completed { get; set; }
+        public string content { get; set; }
+        public string description { get; set; }
+        public DueDto due { get; set; }
+        public object duration { get; set; }
+        public string id { get; set; }
+        public List<object> labels { get; set; }
+        public int order { get; set; }
+        public int priority { get; set; }
+        public string project_id { get; set; }
+        public object section_id { get; set; }
+        public object parent_id { get; set; }
+        public string url { get; set; }
+    }
+
     public class ExternalTodoItemList
     {
         public IEnumerable<ExternalTodoItem> Items { get; set; } = new List<ExternalTodoItem>();
@@ -14,28 +45,18 @@ namespace TodoReward.Infrastructure.Models.ExternalModels
         public List<TodoItem> Items { get; set; } = new List<TodoItem>();
     }
 
-    // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
-    public class Due
-    {
-        public string date { get; set; }
-        public bool is_recurring { get; set; }
-        public string lang { get; set; }
-        public string @string { get; set; }
-        public object timezone { get; set; }
-    }
-
     public class EventData
     {
-        public DateTime added_at { get; set; }
+        public string added_at { get; set; }
         public string added_by_uid { get; set; }
         public object assigned_by_uid { get; set; }
         public bool @checked { get; set; }
         public int child_order { get; set; }
         public bool collapsed { get; set; }
-        public DateTime completed_at { get; set; }
+        public string completed_at { get; set; }
         public string content { get; set; }
         public string description { get; set; }
-        public Due due { get; set; }
+        public DueDto due { get; set; }
         public object duration { get; set; }
         public string id { get; set; }
         public bool is_deleted { get; set; }
@@ -46,7 +67,7 @@ namespace TodoReward.Infrastructure.Models.ExternalModels
         public object responsible_uid { get; set; }
         public object section_id { get; set; }
         public object sync_id { get; set; }
-        public DateTime updated_at { get; set; }
+        public string updated_at { get; set; }
         public string url { get; set; }
         public string user_id { get; set; }
     }
@@ -68,6 +89,4 @@ namespace TodoReward.Infrastructure.Models.ExternalModels
         public string user_id { get; set; }
         public string version { get; set; }
     }
-
-
 }

@@ -19,34 +19,29 @@ var hostBuilder = new HostBuilder()
     })
     .ConfigureServices((context, services) =>
     {
+        services.Configure<StorageTableOptions<UserEntity>>(context.Configuration.GetSection($"{StorageTableOptions<UserEntity>.Name}:Users"));
+        services.Configure<StorageTableOptions<UserRewardEntity>>(context.Configuration.GetSection($"{StorageTableOptions<UserRewardEntity>.Name}:UserRewards"));
+
         services.AddScoped<IGenericRepository<TodoItem>, WebApiGenericRepository<TodoItem, ExternalTodoItemList>>();
         services.AddScoped<IGenericRepository<User>, TableStorageRepository<User, UserEntity>>();
         services.AddScoped<IGenericRepository<UserReward>, TableStorageRepository<UserReward, UserRewardEntity>>();
         services.AddSingleton<IGenericRepository<Reward>, InMemoryRepository<Reward>>(s => new InMemoryRepository<Reward>(GetRewards()));
 
         services.AddScoped<IRewardService, RewardService>();
-        services
-            .AddOptions<StorageTableOptions<UserEntity>>()
-            .Configure<IConfiguration>((options, configuration) =>
-            {
-                options.TableName = "Users";
-                options.ConnectionString = "DefaultEndpointsProtocol=https;AccountName=todorewardsa;AccountKey=lbeUm0F3zU624bDNim1ZW3Sb9yiBxOiTKP7bDXWencjoZ4w6aLDxTgd40lgcLYi5U40hIlkLX4tT+AStxvxGOw==;EndpointSuffix=core.windows.net";
-            });
-        services
-            .AddOptions<StorageTableOptions<UserRewardEntity>>()
-            .Configure<IConfiguration>((options, configuration) =>
-            {
-                options.TableName = "UserRewards";
-                options.ConnectionString = "DefaultEndpointsProtocol=https;AccountName=todorewardsa;AccountKey=lbeUm0F3zU624bDNim1ZW3Sb9yiBxOiTKP7bDXWencjoZ4w6aLDxTgd40lgcLYi5U40hIlkLX4tT+AStxvxGOw==;EndpointSuffix=core.windows.net";
-            });
 
         services.AddAutoMapper(typeof(GeneralProfile));
+        
+        var bearerToken = context.Configuration.GetValue<string>("TokenExternalApi");
         services.AddHttpClient<IGenericRepository<TodoItem>, WebApiGenericRepository<TodoItem, ExternalTodoItemList>>(client =>
         {
             client.BaseAddress = new Uri("https://api.todoist.com/sync/v9/completed/get_all");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "b2918522371f89a1a298596aaeb0f6b544f8673b");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
         });
-
+        services.AddHttpClient<IGenericRepository<TodoItem>, WebApiGenericRepository<TodoItem, ExternalTodoItem>>(client =>
+        {
+            client.BaseAddress = new Uri("https://api.todoist.com/rest/v2/tasks");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
+        });
     });
 
 IList<Reward> GetRewards()

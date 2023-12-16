@@ -3,6 +3,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using System.Net;
+using System.Net.Http.Json;
 using TodoReward.Core.Interfaces;
 using TodoReward.Core.Models;
 using TodoReward.Core.Models.Constants;
@@ -18,7 +19,11 @@ public class TodoRewardFunction
     private readonly IRewardService _rewardService;
     private readonly IMapper _mapper;
 
-    public TodoRewardFunction(ILoggerFactory loggerFactory, IGenericRepository<TodoItem> itemRepository, IGenericRepository<User> userRepository, IRewardService rewardService, IMapper mapper)
+    public TodoRewardFunction(ILoggerFactory loggerFactory,
+        IGenericRepository<TodoItem> itemRepository,
+        IGenericRepository<User> userRepository,
+        IRewardService rewardService,
+        IMapper mapper)
     {
         _logger = loggerFactory.CreateLogger<TodoRewardFunction>();
         _itemRepository = itemRepository;
@@ -50,12 +55,30 @@ public class TodoRewardFunction
         {
             return req.CreateResponse(HttpStatusCode.OK);
         }
-
         var todoItem = _mapper.Map<TodoItem>(requestBody.event_data);
 
-        await _rewardService.RegisterRewardOnUserAsync(todoItem, ModelConstants.USER_ID);
+        var result = await _rewardService.RegisterRewardOnUserAsync(todoItem, ModelConstants.USER_ID);
+
+        await PostRewardsToExternalApp(result);
 
         return req.CreateResponse(HttpStatusCode.OK);
+    }
+
+    private async Task PostRewardsToExternalApp(TodoItemCompleteResult? result)
+    {
+        var rewards = result?.GetAllRewards();
+        if (rewards != null)
+        {
+            foreach (var reward in rewards)
+            {
+                var item = new TodoItem()
+                {
+                    Title = reward.Title,
+                    ProjectId = "2322821085"
+                };
+                await _itemRepository.AddAsync(item);
+            }
+        }
     }
 
     [Function("SyncCompletedItems")]

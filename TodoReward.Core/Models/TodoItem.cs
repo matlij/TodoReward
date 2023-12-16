@@ -14,5 +14,6 @@
         }
         public bool IsPartOfDailyTodoList { get; set; }
         public DateTime CompletedDate { get; set; }
+        public string ProjectId { get; set; } = string.Empty;
     }
 }

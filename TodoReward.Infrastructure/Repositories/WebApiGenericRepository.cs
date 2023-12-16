@@ -2,15 +2,14 @@
 using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
 using System.Net.Http.Json;
+using System.Text.Json;
 using TodoReward.Core.Interfaces;
 using TodoReward.Core.Models;
-using TodoReward.Infrastructure.Models.ExternalModels;
 
 namespace TodoReward.Infrastructure.Repositories;
 
 public class WebApiGenericRepository<T, TExternal> : IGenericRepository<T> where T : BaseEntity
 {
-    private readonly IHttpClientFactory _httpClientFactory;
     private readonly HttpClient _httpClient;
     private readonly IMapper _mapper;
     private readonly ILogger<WebApiGenericRepository<T,TExternal>> _logger;
@@ -20,15 +19,24 @@ public class WebApiGenericRepository<T, TExternal> : IGenericRepository<T> where
         IMapper mapper, 
         ILogger<WebApiGenericRepository<T, TExternal>> logger)
     {
-        //_httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public Task<bool> AddAsync(T item)
+    public async Task<bool> AddAsync(T item)
     {
-        throw new NotImplementedException();
+        var requestBody = _mapper.Map<T, TExternal>(item);
+
+        var response = await _httpClient.PostAsJsonAsync("tasks", requestBody);
+
+        var result = response.IsSuccessStatusCode;
+        if (!result)
+        {
+            _logger.LogWarning("Failed to create Todo item. Url: {url}. Body: {content}", _httpClient.BaseAddress, JsonSerializer.Serialize(requestBody));
+        }
+
+        return result;
     }
 
     public Task<bool> DeleteAsync(string id)
@@ -38,8 +46,7 @@ public class WebApiGenericRepository<T, TExternal> : IGenericRepository<T> where
 
     public async Task<IEnumerable<T>> GetAllAsync()
     {
-        using HttpClient client = _httpClientFactory.CreateClient();
-        var result = await client.GetFromJsonAsync<IEnumerable<TExternal>>("");
+        var result = await _httpClient.GetFromJsonAsync<IEnumerable<TExternal>>("");
 
         return result?.Select(r => _mapper.Map<T>(r)) ?? Enumerable.Empty<T>();
     }
@@ -51,9 +58,7 @@ public class WebApiGenericRepository<T, TExternal> : IGenericRepository<T> where
 
     public async Task<IEnumerable<T>> GetBySpecificationAsync(Expression<Func<TExternal, bool>> predicate)
     {
-        using HttpClient client = _httpClientFactory.CreateClient();
-
-        var result = await client.GetFromJsonAsync<IEnumerable<TExternal>>("");
+        var result = await _httpClient.GetFromJsonAsync<IEnumerable<TExternal>>("");
 
         return result?
             .Where(predicate.Compile())
