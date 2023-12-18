@@ -93,7 +93,7 @@
                 return null;
             }
 
-            TotalPointsRewarded += todoItem.Points;
+            TotalPointsRewarded += RewardLimit;
             return GenerateRandomReward(rewards);
         }
 
