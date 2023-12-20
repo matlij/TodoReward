@@ -28,7 +28,7 @@ namespace TodoReward.Web
             });
 
             builder.Services.AddAutoMapper(typeof(GeneralProfile));
-            builder.Services.AddTransient<IGenericRepository<TodoItem>, WebApiGenericRepository<TodoItem, ExternalTodoItemList>>();
+            builder.Services.AddTransient<IGenericRepository<TodoItem>, WebApiGenericRepository<TodoItem, TodoistTodoItemList>>();
             builder.Services.AddTransient<IGenericRepository<User>, TableStorageRepository<User, UserEntity>>();
 
             builder.Services.Configure<StorageTableOptions<UserEntity>>(o =>

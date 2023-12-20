@@ -1,6 +1,6 @@
 ﻿namespace TodoReward.Infrastructure.Models.ExternalModels
 {
-    public class ExternalProject
+    public class TodoistProject
     {
         public int ChildOrder { get; set; }
         public bool Collapsed { get; set; }

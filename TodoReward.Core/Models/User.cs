@@ -1,4 +1,6 @@
-﻿namespace TodoReward.Core.Models
+﻿using TodoReward.Core.Extensions;
+
+namespace TodoReward.Core.Models
 {
     public class User : BaseEntity
     {
@@ -124,18 +126,7 @@
             }
 
             var pot = GeneratePot(rewards);
-            return GetRandomRewardFromPot(pot, rewards);
-        }
-
-        private static Reward GetRandomRewardFromPot(IList<string> pot, IEnumerable<Reward> rewards)
-        {
-            var rnd = new Random();
-
-            var i = rnd.Next(pot.Count - 1);
-
-            var rndRewardId = pot[i];
-
-            return rewards.Single(r => r.Id == rndRewardId);
+            return rewards.GetRandomFromPot(pot);
         }
 
         private static IList<string> GeneratePot(IEnumerable<Reward> rewards)

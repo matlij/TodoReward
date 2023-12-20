@@ -3,11 +3,13 @@ using Azure.Data.Tables;
 
 namespace TodoReward.Infrastructure.Models.StorageTable;
 
-public class UserEntity : ITableEntity
+public class TodoItemEntity : ITableEntity
 {
-    public int TotalPoints { get; set; }
-    public int TotalPointsRewarded { get; set; }
-    public int MilstonesReached { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public int Points { get; set; }
+    public DateTime? CompletedDate { get; set; }
+    public DateTime? DueDate { get; set; }
+    public string ProjectId { get; set; } = string.Empty;
     public string PartitionKey { get; set; } = StorageTableConstants.StorageTablePartitionKey;
     public string RowKey { get; set; }
     public DateTimeOffset? Timestamp { get; set; }

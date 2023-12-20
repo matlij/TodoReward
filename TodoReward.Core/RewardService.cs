@@ -27,7 +27,7 @@ namespace TodoReward.Core
             var rewardResults = new List<TodoItemCompleteResult>();
             foreach (var item in items)
             {
-                var result = CreateTodoItemCompleteResult(user, item, rewards);
+                var result = RegisterCompletedTodo(user, item, rewards);
                 rewardResults.Add(result);
             }
 
@@ -42,7 +42,7 @@ namespace TodoReward.Core
             var user = await GetUserByIdAsync(userId);
             var rewards = await _rewardRepository.GetAllAsync();
 
-            var result = CreateTodoItemCompleteResult(user, item, rewards);
+            var result = RegisterCompletedTodo(user, item, rewards);
 
             await UpdateUserRewardsAsync(user, new List<TodoItemCompleteResult> { result });
             await _userRepository.UpdateAsync(user.Id, user);
@@ -56,7 +56,7 @@ namespace TodoReward.Core
                    ?? throw new InvalidOperationException("Cannot find user with ID: " + userId);
         }
 
-        private TodoItemCompleteResult CreateTodoItemCompleteResult(User user, TodoItem item, IEnumerable<Reward> rewards)
+        private TodoItemCompleteResult RegisterCompletedTodo(User user, TodoItem item, IEnumerable<Reward> rewards)
         {
             return new TodoItemCompleteResult
             {

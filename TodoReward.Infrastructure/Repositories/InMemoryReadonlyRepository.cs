@@ -1,24 +1,25 @@
 ﻿using AutoBogus;
 using Bogus;
+using System.Collections.Frozen;
 using System.Linq.Expressions;
 using TodoReward.Core.Interfaces;
 using TodoReward.Core.Models;
 
 namespace TodoReward.Infrastructure.Repositories
 {
-    public class InMemoryRepository<T> : IGenericRepository<T> where T : BaseEntity
+    public class InMemoryReadonlyRepository<T> : IGenericReadonlyRepository<T> where T : BaseEntity
     {
-        private readonly IList<T> _items;
+        private readonly FrozenSet<T> _items;
 
-        public InMemoryRepository(IList<T> items)
+        public InMemoryReadonlyRepository(FrozenSet<T> items)
         {
             _items = items;
         }
 
-        public InMemoryRepository()
+        public InMemoryReadonlyRepository()
         {
             var faker = new MyDefaultFaker();
-            _items = faker.GenerateBetween(19, 20);
+            _items = faker.GenerateBetween(19, 20).ToFrozenSet();
         }
 
         public Task<IEnumerable<T>> GetAllAsync()
@@ -34,40 +35,6 @@ namespace TodoReward.Infrastructure.Repositories
         public Task<IEnumerable<T>> GetBySpecificationAsync(Expression<Func<T, bool>> predicate)
         {
             return Task.FromResult(_items.Where(predicate.Compile()));
-        }
-
-        public Task<bool> AddAsync(T item)
-        {
-            _items.Add(item);
-            return Task.FromResult(true);
-        }
-
-        public Task<bool> UpdateAsync(string id, T item)
-        {
-            if (item is null)
-            {
-                throw new ArgumentNullException(nameof(item));
-            }
-
-            var existing = _items.SingleOrDefault(i => i.Id == id);
-            if (existing == null)
-            {
-                return Task.FromResult(false);
-            }
-
-            existing = item;
-
-            return Task.FromResult(true);
-        }
-
-        public Task<bool> DeleteAsync(string id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateRangeAsync(IEnumerable<T> items)
-        {
-            throw new NotImplementedException();
         }
 
         public Task<IEnumerable<T>> GetBySpecificationAsync(string filter)

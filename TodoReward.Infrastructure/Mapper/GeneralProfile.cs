@@ -10,31 +10,28 @@ public class GeneralProfile : Profile
 {
     public GeneralProfile()
     {
-        CreateMap<EventData, TodoItem>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.id))
+        // Todoist to Core
+        CreateMap<TodoistEventData, Core.Models.TodoItem>()
             .ForMember(dest => dest.Points, opt => opt.MapFrom(src => 1)) // TODO: Set points from todoist data
-            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.content))
-            .ForMember(dest => dest.CompletedDate, opt => opt.MapFrom(src =>  src.completed_at.ToDateTime()));
+            .ForMember(dest => dest.CompletedDate, opt => opt.MapFrom(src =>  src.CompletedAt.ToDateTime()));
 
-        CreateMap<ExternalTodoItemList, TodoItemList>();
-        CreateMap<ExternalTodoItemList, IEnumerable<TodoItem>>()
+        CreateMap<TodoistTodoItemList, TodoItemList>();
+        CreateMap<TodoistTodoItemList, IEnumerable<Core.Models.TodoItem>>()
             .ConvertUsing((src, dest, context) =>
             {
-                var todoItems = context.Mapper.Map<IEnumerable<ExternalTodoItem>, IEnumerable<TodoItem>>(src.Items.ToList());
+                var todoItems = context.Mapper.Map<IEnumerable<TodoistCreateTask>, IEnumerable<Core.Models.TodoItem>>(src.Items.ToList());
                 return todoItems;
             });
 
-        CreateMap<ExternalTodoItem, TodoItem>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.TaskId))
-            .ForMember(dest => dest.Points, opt => opt.MapFrom(src => 1)) // TODO, set points after prio or something else
-            .ForMember(dest => dest.IsCompleted, opt => opt.MapFrom(src => true))
-            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Content));
+        CreateMap<TodoistTask, Core.Models.TodoItem>()
+            .ForMember(dest => dest.Points, opt => opt.MapFrom(src => 1)); // TODO, set points after prio or something else
 
-        CreateMap<TodoItem, ExternalTodoItem>()
-            .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Title));
+        // Core to Todoist
+        CreateMap<TodoItem, TodoistCreateTask>();
 
-        CreateMap<UserEntity, User>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.RowKey));
+        // Core to Storage table entity
+        CreateMap<TodoItem, TodoItemEntity>()
+            .ForMember(dest => dest.RowKey, opt => opt.MapFrom(src => src.Id));
         CreateMap<UserReward, UserRewardEntity>()
             .ForMember(dest => dest.RowKey, opt => opt.MapFrom(src => src.Id));
 
@@ -42,5 +39,9 @@ public class GeneralProfile : Profile
             .ForMember(dest => dest.RowKey, opt => opt.MapFrom(src => src.Id));
         CreateMap<UserReward, UserRewardEntity>()
             .ForMember(dest => dest.RowKey, opt => opt.MapFrom(src => src.Id));
+
+        // Storage table entity to Core
+        CreateMap<UserEntity, User>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.RowKey));
     }
 }
