@@ -14,7 +14,7 @@ namespace TodoReward.Functions.Functions;
 public class TodoRewardFunction
 {
     private readonly ILogger _logger;
-    private readonly IGenericRepository<Core.Models.TodoItem> _itemRepository;
+    private readonly IGenericRepository<TodoItem> _itemRepository;
     private readonly IGenericRepository<User> _userRepository;
     private readonly IRewardService _rewardService;
     private readonly IMapper _mapper;

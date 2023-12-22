@@ -8,13 +8,13 @@ namespace TodoReward.Core
         private readonly IGenericRepository<TodoItem> _todoRepository;
         private readonly IGenericRepository<User> _userRepository;
         private readonly IGenericRepository<UserReward> _userRewardRepository;
-        private readonly IGenericRepository<Reward> _rewardRepository;
+        private readonly IGenericReadonlyRepository<Reward> _rewardRepository;
 
         public TodoItemService(
             IGenericRepository<TodoItem> todoRepository,
             IGenericRepository<User> userRepository,
             IGenericRepository<UserReward> userRewardRepository,
-            IGenericRepository<Reward> rewardRepository)
+            IGenericReadonlyRepository<Reward> rewardRepository)
         {
             _todoRepository = todoRepository;
             _userRepository = userRepository;
