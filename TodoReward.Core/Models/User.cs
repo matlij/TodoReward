@@ -4,7 +4,7 @@ namespace TodoReward.Core.Models
 {
     public class User : BaseEntity
     {
-        private const int RewardLimit = 2;
+        private const int RewardLimit = 3;
 
         public IList<UserReward> Rewards { get; } = new List<UserReward>();
         public void AddRewards(TodoItemCompleteResult result)
