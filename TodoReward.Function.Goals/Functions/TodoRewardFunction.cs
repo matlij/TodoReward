@@ -20,7 +20,7 @@ public class TodoRewardFunction
     private readonly IMapper _mapper;
 
     public TodoRewardFunction(ILoggerFactory loggerFactory,
-        IGenericRepository<Core.Models.TodoItem> itemRepository,
+        IGenericRepository<TodoItem> itemRepository,
         IGenericRepository<User> userRepository,
         IRewardService rewardService,
         IMapper mapper)
@@ -88,7 +88,8 @@ public class TodoRewardFunction
                 var item = new TodoItem()
                 {
                     Content = reward.Title,
-                    ProjectId = ExternalTodoConstants.REWARDS_PROJECT_ID
+                    ProjectId = ExternalTodoConstants.REWARDS_PROJECT_ID,
+                    CompletedDate = DateTime.UtcNow
                 };
                 await _itemRepository.AddAsync(item);
             }
