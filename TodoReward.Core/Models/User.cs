@@ -88,7 +88,8 @@ namespace TodoReward.Core.Models
             return reward;
         }
 
-        private static int GetPointsForCompletedTodo(TodoItem todoItem) => todoItem.DueDate.HasValue &&
+        private static int GetPointsForCompletedTodo(TodoItem todoItem) => 
+            !todoItem.DueDate.HasValue ||
             todoItem.DueDate.Value.Date.Day >= DateTime.UtcNow.Date.Day
                 ? 2
                 : 1;

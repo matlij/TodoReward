@@ -47,5 +47,5 @@ jobs:
       uses: Azure/functions-action@v1
       with:
         app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
-        publish-profile: ${{ secrets.TodoRewardWebApi20231023180625_9186 }}
+        publish-profile: ${{ secrets.TodoRewardWebApi20231023180625_E24B }}
         package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
