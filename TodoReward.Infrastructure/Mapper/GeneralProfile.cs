@@ -11,8 +11,8 @@ public class GeneralProfile : Profile
     public GeneralProfile()
     {
         // Todoist to Core
-        CreateMap<TodoistEventData, Core.Models.TodoItem>()
-            .ForMember(dest => dest.Points, opt => opt.MapFrom(src => 1)) // TODO: Set points from todoist data
+        CreateMap<TodoistEventData, TodoItem>()
+            //.ForMember(dest => dest.Points, opt => opt.MapFrom(src => 1)) // TODO: Set points from todoist data
             .ForMember(dest => dest.CompletedDate, opt => opt.MapFrom(src =>  src.CompletedAt.ToDateTime()));
 
         CreateMap<TodoistTodoItemList, TodoItemList>();
@@ -23,8 +23,8 @@ public class GeneralProfile : Profile
                 return todoItems;
             });
 
-        CreateMap<TodoistTask, Core.Models.TodoItem>()
-            .ForMember(dest => dest.Points, opt => opt.MapFrom(src => 1)); // TODO, set points after prio or something else
+        CreateMap<TodoistTask, TodoItem>();
+        //.ForMember(dest => dest.Points, opt => opt.MapFrom(src => 1)); // TODO, set points after prio or something else
 
         // Core to Todoist
         CreateMap<TodoItem, TodoistCreateTask>();

@@ -6,7 +6,6 @@ public class TodoItem : BaseEntity
     private DateTime? _dueDate;
 
     public string Content { get; set; } = string.Empty;
-    public int Points { get; set; }
     public bool IsCompleted
     {
         get

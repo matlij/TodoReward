@@ -4,7 +4,7 @@ namespace TodoReward.Core.Models
 {
     public class User : BaseEntity
     {
-        private const int RewardLimit = 3;
+        private const int RewardLimit = 4;
 
         public IList<UserReward> Rewards { get; } = new List<UserReward>();
         public void AddRewards(TodoItemCompleteResult result)
@@ -81,12 +81,17 @@ namespace TodoReward.Core.Models
 
         public Reward? RegisterCompletedTodo(TodoItem todoItem, IEnumerable<Reward> rewards)
         {
-            TotalPoints += todoItem.Points;
+            TotalPoints += GetPointsForCompletedTodo(todoItem);
 
             var reward = GetReward(todoItem, rewards);
 
             return reward;
         }
+
+        private static int GetPointsForCompletedTodo(TodoItem todoItem) => todoItem.DueDate.HasValue &&
+            todoItem.DueDate.Value.Date.Day >= DateTime.UtcNow.Date.Day
+                ? 2
+                : 1;
 
         private Reward? GetReward(TodoItem todoItem, IEnumerable<Reward> rewards)
         {
