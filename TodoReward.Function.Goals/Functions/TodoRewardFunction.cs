@@ -89,7 +89,7 @@ public class TodoRewardFunction
                 {
                     Content = reward.Title,
                     ProjectId = ExternalTodoConstants.REWARDS_PROJECT_ID,
-                    CompletedDate = DateTime.UtcNow
+                    DueDate = DateTime.UtcNow
                 };
                 await _itemRepository.AddAsync(item);
             }
