@@ -68,7 +68,6 @@ FrozenSet<Reward> GetRewards()
         new() { Title = "One movie on TV", Propability = 1000 },
         new() { Title = "30 min gaming", Propability = 100 },
         new() { Title = "One podcast episode", Propability = 1000 },
-        new() { Title = "15 min book reading", Propability = 500 },
         new() { Title = "Beer", Propability = 1000 },
         new() { Title = "Glas of Wine", Propability = 200 },
         new() { Title = "Candy", Propability = 500 },
@@ -98,7 +97,7 @@ FrozenSet<Challange> GetChallanges()
         new() { Title = "Pluralsight 30 min" },
         new() { Title = "1 hour coding on a home project" },
         new() { Title = "Write down three things you're grateful for" },
-        new() { Title = "No spending on fooed" },
+        new() { Title = "No spending on food" },
         new() { Title = "Complementing others" },
         new() { Title = "30 min house fixing" }
     }.ToFrozenSet();

@@ -16,7 +16,7 @@ public class GeneralProfile : Profile
             .ForMember(dest => dest.CompletedDate, opt => opt.MapFrom(src =>  src.CompletedAt.ToDateTime()));
 
         CreateMap<TodoistTodoItemList, TodoItemList>();
-        CreateMap<TodoistTodoItemList, IEnumerable<Core.Models.TodoItem>>()
+        CreateMap<TodoistTodoItemList, IEnumerable<TodoItem>>()
             .ConvertUsing((src, dest, context) =>
             {
                 var todoItems = context.Mapper.Map<IEnumerable<TodoistCreateTask>, IEnumerable<Core.Models.TodoItem>>(src.Items.ToList());
@@ -27,7 +27,8 @@ public class GeneralProfile : Profile
         //.ForMember(dest => dest.Points, opt => opt.MapFrom(src => 1)); // TODO, set points after prio or something else
 
         // Core to Todoist
-        CreateMap<TodoItem, TodoistCreateTask>();
+        CreateMap<TodoItem, TodoistCreateTask>()
+            .ForMember(dest => dest.DueDate, opt => opt.MapFrom(src => src.DueDate.ToShortDateString()));
 
         // Core to Storage table entity
         CreateMap<TodoItem, TodoItemEntity>()
