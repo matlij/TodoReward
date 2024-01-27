@@ -19,35 +19,41 @@ namespace TodoReward.Core
             _rewardRepository = rewardRepository;
         }
 
-        public async Task<IEnumerable<TodoItemCompleteResult>?> RegisterRewardsOnUserAsync(IEnumerable<TodoItem> items, string userId)
+        public async Task<IEnumerable<Reward>?> RegisterRewardsOnUserAsync(IEnumerable<TodoItem> items, string userId)
         {
             var user = await GetUserByIdAsync(userId);
             var rewards = await _rewardRepository.GetAllAsync();
 
-            var rewardResults = new List<TodoItemCompleteResult>();
+            var receivedRewards = new List<Reward>();
             foreach (var item in items)
             {
-                var result = RegisterCompletedTodo(user, item, rewards);
-                rewardResults.Add(result);
+                var reward = user.RegisterCompletedTodo(item, rewards);
+                if (reward != null)
+                {
+                    receivedRewards.Add(reward);
+                }
             }
 
-            await UpdateUserRewardsAsync(user, rewardResults);
+            await UpdateUserRewardsAsync(user, rewards);
             await _userRepository.UpdateAsync(user.Id, user);
 
-            return rewardResults;
+            return rewards;
         }
 
-        public async Task<TodoItemCompleteResult?> RegisterRewardOnUserAsync(TodoItem item, string userId)
+        public async Task<Reward?> RegisterRewardOnUserAsync(TodoItem item, string userId)
         {
             var user = await GetUserByIdAsync(userId);
             var rewards = await _rewardRepository.GetAllAsync();
 
-            var result = RegisterCompletedTodo(user, item, rewards);
+            var reward = user.RegisterCompletedTodo(item, rewards);
 
-            await UpdateUserRewardsAsync(user, new List<TodoItemCompleteResult> { result });
-            await _userRepository.UpdateAsync(user.Id, user);
+            if (reward != null)
+            {
+                await UpdateUserRewardsAsync(user, new List<Reward> { reward });
+                await _userRepository.UpdateAsync(user.Id, user);
+            }
 
-            return result;
+            return reward;
         }
 
         private async Task<User> GetUserByIdAsync(string userId)
@@ -56,23 +62,10 @@ namespace TodoReward.Core
                    ?? throw new InvalidOperationException("Cannot find user with ID: " + userId);
         }
 
-        private TodoItemCompleteResult RegisterCompletedTodo(User user, TodoItem item, IEnumerable<Reward> rewards)
+        private Task<bool> UpdateUserRewardsAsync(User user, IEnumerable<Reward> rewards)
         {
-            return new TodoItemCompleteResult
-            {
-                Reward = user.RegisterCompletedTodo(item, rewards),
-                RewardsFromCompletedMilestone = user.GetRewardsForMilestone(rewards)
-            };
-        }
-
-        private async Task<IEnumerable<TodoItemCompleteResult>?> UpdateUserRewardsAsync(User user, IEnumerable<TodoItemCompleteResult> userRewards)
-        {
-            foreach (var reward in userRewards)
-            {
-                user.AddRewards(reward);
-            }
-            var updateSucceeded = await _userRewardRepository.UpdateRangeAsync(user.Rewards);
-            return updateSucceeded ? userRewards : null;
+            user.AddRewards(rewards);
+            return _userRewardRepository.UpdateRangeAsync(user.Rewards);
         }
     }
 }

@@ -7,9 +7,9 @@ namespace TodoReward.Core.Models
         private const int RewardLimit = 4;
 
         public IList<UserReward> Rewards { get; } = new List<UserReward>();
-        public void AddRewards(TodoItemCompleteResult result)
+        public void AddRewards(IEnumerable<Reward> rewards)
         {
-            foreach (var reward in result.GetAllRewards())
+            foreach (var reward in rewards)
             {
                 var userReward = new UserReward
                 {
@@ -34,41 +34,6 @@ namespace TodoReward.Core.Models
 
         public TodoItem? LastCompletedItem { get; set; }
 
-        public int MilstonesReached { get; set; }
-        public int NoOfRewardsInCurrentMilstone
-        {
-            get
-            {
-                return (MilstonesReached * 2) + 2;
-            }
-        }
-        public int NextMileStone
-        {
-            get
-            {
-                return PointsToNextMilestone(MilstonesReached);
-            }
-        }
-        public double PercentageCompletedOfNextMilestone
-        {
-            get
-            {
-                var pointsToPrevoiusMilestone = PointsToNextMilestone(MilstonesReached - 1);
-                var totaltPointsToReachNextMilestone = NextMileStone - pointsToPrevoiusMilestone;
-                var pointsEarnedInThisMilestone = TotalPoints - pointsToPrevoiusMilestone;
-
-                var percentage = (double)pointsEarnedInThisMilestone / totaltPointsToReachNextMilestone;
-                return percentage;
-            }
-        }
-        public bool HasReachedMilestone
-        {
-            get
-            {
-                return TotalPoints >= NextMileStone;
-            }
-        }
-
         private bool ShoudlGetReward
         {
             get
@@ -77,13 +42,11 @@ namespace TodoReward.Core.Models
             }
         }
 
-        private static int PointsToNextMilestone(int milestone) => (milestone * milestone * 5) + 5;
-
         public Reward? RegisterCompletedTodo(TodoItem todoItem, IEnumerable<Reward> rewards)
         {
             TotalPoints += GetPointsForCompletedTodo(todoItem);
 
-            var reward = GetReward(todoItem, rewards);
+            var reward = GetReward(rewards);
 
             return reward;
         }
@@ -94,7 +57,7 @@ namespace TodoReward.Core.Models
                 ? 2
                 : 1;
 
-        private Reward? GetReward(TodoItem todoItem, IEnumerable<Reward> rewards)
+        private Reward? GetReward(IEnumerable<Reward> rewards)
         {
             if (!ShoudlGetReward)
             {
@@ -103,25 +66,6 @@ namespace TodoReward.Core.Models
 
             TotalPointsRewarded += RewardLimit;
             return GenerateRandomReward(rewards);
-        }
-
-        public IEnumerable<Reward>? GetRewardsForMilestone(IEnumerable<Reward> rewards)
-        {
-            if (!HasReachedMilestone)
-            {
-                return null;
-            }
-
-            MilstonesReached++;
-
-            var rewardsInMileStone = new List<Reward>();
-            for (int i = 0; i < NoOfRewardsInCurrentMilstone; i++)
-            {
-                var randomReward = GenerateRandomReward(rewards);
-                rewardsInMileStone.Add(randomReward);
-            }
-
-            return rewardsInMileStone;
         }
 
         private static Reward GenerateRandomReward(IEnumerable<Reward> rewards)

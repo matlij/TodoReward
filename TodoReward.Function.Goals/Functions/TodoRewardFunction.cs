@@ -48,9 +48,12 @@ public class TodoRewardFunction
         }
         var todoItem = _mapper.Map<TodoItem>(requestBody.EventData);
 
-        var result = await _rewardService.RegisterRewardOnUserAsync(todoItem, ModelConstants.USER_ID);
+        var reward = await _rewardService.RegisterRewardOnUserAsync(todoItem, ModelConstants.USER_ID);
 
-        await PostRewardsToExternalApp(result);
+        if (reward != null)
+        {
+            await PostRewardsToExternalApp(reward);
+        }
 
         return req.CreateResponse(HttpStatusCode.OK);
     }
@@ -78,21 +81,14 @@ public class TodoRewardFunction
         return response;
     }
 
-    private async Task PostRewardsToExternalApp(TodoItemCompleteResult? result)
+    private async Task PostRewardsToExternalApp(Reward reward)
     {
-        var rewards = result?.GetAllRewards();
-        if (rewards != null)
+        var item = new TodoItem()
         {
-            foreach (var reward in rewards)
-            {
-                var item = new TodoItem()
-                {
-                    Content = reward.Title,
-                    ProjectId = ExternalTodoConstants.REWARDS_PROJECT_ID,
-                    DueDate = DateTime.UtcNow
-                };
-                await _itemRepository.AddAsync(item);
-            }
-        }
+            Content = reward.Title,
+            ProjectId = ExternalTodoConstants.REWARDS_PROJECT_ID,
+            DueDate = DateTime.UtcNow
+        };
+        await _itemRepository.AddAsync(item);
     }
 }
